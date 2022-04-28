@@ -161,12 +161,12 @@ void rateControlWorker1Hz( void* z ) {
 
         pidOutputTmp = sectionRateConfig.invertOutput ? pidOutput : -pidOutput;
 
-        if( pidOutputTmp < 0 && pidOutputTmp > -sectionRateConfig.rateControlPidMinPwm ) {
-          pidOutputTmp = -sectionRateConfig.rateControlPidMinPwm;
+        if( pidOutputTmp < 0 && pidOutputTmp > -sectionRateConfig.rateControlMinPwm ) {
+          pidOutputTmp = -sectionRateConfig.rateControlMinPwm;
         }
 
-        if( pidOutputTmp > 0 && pidOutputTmp < sectionRateConfig.rateControlPidMinPwm ) {
-          pidOutputTmp = sectionRateConfig.rateControlPidMinPwm;
+        if( pidOutputTmp > 0 && pidOutputTmp < sectionRateConfig.rateControlMinPwm ) {
+          pidOutputTmp = sectionRateConfig.rateControlMinPwm;
         }
 
         switch( initialisation.outputType ) {

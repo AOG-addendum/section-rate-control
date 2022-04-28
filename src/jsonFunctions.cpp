@@ -146,7 +146,7 @@ json parseSectionRateConfigToJson( const SectionRateConfig& config ) {
   j["output"]["outputType"] = int( config.outputType );
   j["output"]["rateControlType"] = int( config.rateControlType );
   j["output"]["pwmFrequency"] = config.pwmFrequency;
-  j["output"]["minPWM"] = config.rateControlPidMinPwm;
+  j["output"]["minPWM"] = config.rateControlMinPwm;
   j["output"]["gpioPwm"] = int( config.gpioPwm );
   j["output"]["gpioDir"] = int( config.gpioDir );
   j["output"]["gpioEn"] = int( config.gpioEn );
@@ -225,7 +225,7 @@ void parseJsonToSectionRateConfig( json& j, SectionRateConfig& config ) {
       config.outputType = j.value( "/output/outputType"_json_pointer, sectionRateConfigDefaults.outputType );
       config.rateControlType = j.value( "/output/rateControlType"_json_pointer, sectionRateConfigDefaults.rateControlType );
       config.pwmFrequency = j.value( "/output/pwmFrequency"_json_pointer, sectionRateConfigDefaults.pwmFrequency );
-      config.rateControlPidMinPwm = j.value( "/output/minPWM"_json_pointer, sectionRateConfigDefaults.rateControlPidMinPwm );
+      config.rateControlMinPwm = j.value( "/output/minPWM"_json_pointer, sectionRateConfigDefaults.rateControlMinPwm );
       config.gpioPwm = j.value( "/output/gpioPwm"_json_pointer, sectionRateConfigDefaults.gpioPwm );
       config.gpioDir = j.value( "/output/gpioDir"_json_pointer, sectionRateConfigDefaults.gpioDir );
       config.gpioEn = j.value( "/output/gpioEn"_json_pointer, sectionRateConfigDefaults.gpioEn );

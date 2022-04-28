@@ -127,7 +127,7 @@ struct SectionRateConfig {
   double rateControlPidKi = 0.5;
   double rateControlPidKiMax = 128;
   double rateControlPidKd = 1;
-  uint8_t rateControlPidMinPwm = 20;
+  uint8_t rateControlMinPwm = 20;
 
   SectionRateConfig::Gpio gpioFlowSensorEncoder = SectionRateConfig::Gpio::Esp32Gpio22;
   uint16_t pulsesPerUnit = 100;

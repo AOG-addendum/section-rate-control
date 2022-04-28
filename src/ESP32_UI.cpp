@@ -342,9 +342,9 @@ void initESPUI ( void ) {
           ESPUI.addControl( ControlType::Step, "Step", "0.01", ControlColor::Peterriver, num );
         }
         {
-          uint16_t num = ESPUI.addControl( ControlType::Number, "PID Min PWM", String( sectionRateConfig.rateControlPidMinPwm, 4 ), ControlColor::Peterriver, tab,
+          uint16_t num = ESPUI.addControl( ControlType::Number, "Minimum PWM", String( sectionRateConfig.rateControlMinPwm ), ControlColor::Peterriver, tab,
           []( Control * control, int id ) {
-            sectionRateConfig.rateControlPidMinPwm = control->value.toDouble();
+            sectionRateConfig.rateControlMinPwm = control->value.toInt();
           } );
           ESPUI.addControl( ControlType::Min, "Min", "0", ControlColor::Peterriver, num );
           ESPUI.addControl( ControlType::Max, "Max", "50", ControlColor::Peterriver, num );

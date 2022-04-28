@@ -73,7 +73,7 @@ void rateDisplayWorker1Hz( void* z ) {
   for( ;; ) {
 
     totalEncoderCount += flowSensorPulseCount;  // process flow meter even if we're not moving
-    uint32_t amount = flowSensorPulseCount / ( double ) sectionRateConfig.pulsesPerUnit;
+    uint32_t amount = flowSensorPulseCount / sectionRateConfig.pulsesPerUnit;
     flowSensorPulseCount = 0;
     runtimeData.tankFluidRemaining -= amount;
     runtimeData.totalFluidUnitsApplied += amount;
@@ -108,7 +108,7 @@ void rateDisplayWorker1Hz( void* z ) {
     DISPLAY_VARIABLES[0] = actualFlowRate;
     DISPLAY_VARIABLES[1] = runtimeData.totalFluidUnitsApplied;
     DISPLAY_VARIABLES[2] = travelData.speed * 0.001;
-    DISPLAY_VARIABLES[3] = ( runtimeData.totalLandUnitsApplied / 43560 ) * 0.001;
+    DISPLAY_VARIABLES[3] = ( runtimeData.totalLandUnitsApplied / 43560.0 ) * 0.001;
     DISPLAY_VARIABLES[4] = runtimeData.tankFluidRemaining;
     updateDisplayVariables();
     saveRuntimeData();
@@ -461,9 +461,9 @@ void initRateControl() {
     attachInterrupt( ( uint8_t )sectionRateConfig.gpioFlowSensorEncoder, flowSensorISR, CHANGE);
   }
 
-  xTaskCreate( rateDisplayWorker1Hz, "rateDisplayWorker1Hz", 3096, NULL, 3, NULL );
-  xTaskCreate( rateESPUIWorker1Hz, "rateESPUIWorker1Hz", 3096, NULL, 3, NULL );
+  xTaskCreate( rateDisplayWorker1Hz, "rateDisplayWorker", 3096, NULL, 3, NULL );
+  xTaskCreate( rateESPUIWorker1Hz, "rateESPUIWorker", 3096, NULL, 3, NULL );
   if( AOG_Control == true ) {
-    xTaskCreate( rateControlWorker1Hz, "rateControlWorker1Hz", 3096, NULL, 3, NULL );
+    xTaskCreate( rateControlWorker1Hz, "rateControlWorker", 3096, NULL, 3, NULL );
   }
 }

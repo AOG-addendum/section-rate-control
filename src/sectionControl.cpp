@@ -148,7 +148,7 @@ void initSectionControl() {
             travelData.counts += 1;
           }
         } else {
-          travelData.speed *= 100; // * 0.001 for true MPH
+          travelData.speed *= 100; // * 0.001 for true KMH
           if( travelData.clearData == true ){
             travelData.squareUnitsCovered = (( travelData.speed * 0.2778 ) * sectionSetpoints.sectionsOnWidth ) / 10; // KMH * 0.2778 = meters per second
             travelData.clearData = false;

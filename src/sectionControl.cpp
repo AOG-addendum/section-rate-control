@@ -140,7 +140,6 @@ void initSectionControl() {
         if( ( SectionRateConfig::UnitType )sectionRateConfig.unitType == SectionRateConfig::UnitType::Imperial ) {
           travelData.speed *= 62.13; // * 0.001 for true MPH
           if( travelData.clearData == true ){
-            runtimeData.totalLandUnitsApplied += ( ( double )travelData.squareUnitsCovered / travelData.counts );
             travelData.squareUnitsCovered = (( travelData.speed * 1.4666 ) * sectionSetpoints.sectionsOnWidth ) / 12; // MPH * 1.4666 = feet per second
             travelData.clearData = false;
             travelData.counts = 1;
@@ -151,7 +150,6 @@ void initSectionControl() {
         } else {
           travelData.speed *= 100; // * 0.001 for true MPH
           if( travelData.clearData == true ){
-            runtimeData.totalLandUnitsApplied += ( ( double )travelData.squareUnitsCovered / travelData.counts );
             travelData.squareUnitsCovered = (( travelData.speed * 0.2778 ) * sectionSetpoints.sectionsOnWidth ) / 10; // KMH * 0.2778 = meters per second
             travelData.clearData = false;
             travelData.counts = 1;

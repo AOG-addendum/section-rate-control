@@ -92,7 +92,7 @@ void checkManualUpSwitch (void) {
   static bool debounceState = HIGH;
   static bool lastState = HIGH;
   static unsigned long lastDebounceTime = 0;
-  static uint8_t rate = 0;
+  static uint8_t rate = 100;
   bool state = digitalRead(19);
   if (state != lastState) {
     lastDebounceTime = millis();
@@ -101,7 +101,7 @@ void checkManualUpSwitch (void) {
     debounceState = state;
   }
   if (state == LOW and debounceState == LOW) {
-    if( rate > 128 ){
+    if( rate > 200 ){
       rate = 255;
     } else {
       rate += 1;
@@ -109,7 +109,7 @@ void checkManualUpSwitch (void) {
     ledcWrite( 0, rate );
     ledcWrite( 1, 0 );
   } else {
-    rate = 0;
+    rate = 100;
   }
   lastState = state;
 }
@@ -142,7 +142,7 @@ void checkManualDownSwitch (void) {
   static bool debounceState = HIGH;
   static bool lastState = HIGH;
   static unsigned long lastDebounceTime = 0;
-  static uint8_t rate = 0;
+  static uint8_t rate = 100;
   bool state = digitalRead(21);
   if (state != lastState) {
     lastDebounceTime = millis();
@@ -159,7 +159,7 @@ void checkManualDownSwitch (void) {
     ledcWrite( 0, 0 );
     ledcWrite( 1, rate );
   } else {
-    rate = 0;
+    rate = 100;
   }
   lastState = state;
 }
@@ -188,10 +188,13 @@ void checkAutoDownSwitch (void) {
     if (seconds == 0) {
       if( DISPLAY_INDEX[0] == 4 ){
         runtimeData.tankFluidRemaining = sectionRateConfig.tankSize;
+        DISPLAY_VARIABLES[4] = runtimeData.tankFluidRemaining;
       } else if ( DISPLAY_INDEX[0] == 3 ) {
         runtimeData.totalLandUnitsApplied = 0;
+        DISPLAY_VARIABLES[3] = runtimeData.totalLandUnitsApplied;
       } else if ( DISPLAY_INDEX[0] == 1 ) {
         runtimeData.totalFluidUnitsApplied = 0;
+        DISPLAY_VARIABLES[1] = runtimeData.totalFluidUnitsApplied;
       }
       reset = true;
       updateDisplay();

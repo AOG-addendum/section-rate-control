@@ -11,7 +11,6 @@ extern int DISPLAY_INDEX [menuitems];
 extern void updateDisplay( void );
 extern void updateDisplayVariables( void );
 
-extern void switchManualWorker10Hz( void );
 extern void checkAutoUpSwitch( void );
 extern void checkAutoDownSwitch( void );
 extern void checkManualUpSwitch( void );

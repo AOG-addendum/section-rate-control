@@ -132,7 +132,7 @@ void rateControlWorker1Hz( void* z ) {
 
   }
 
-  pid.setTimeStep( xFrequency );
+  pid.setTimeStep( 10 );
 
   for( ;; ) {
 

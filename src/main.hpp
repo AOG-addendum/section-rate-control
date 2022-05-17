@@ -38,7 +38,7 @@ extern uint16_t labelLoad;
 extern uint16_t labelStatusOutputType;
 extern uint16_t labelStatusRateControlType;
 extern uint16_t labelStatusMeter;
-extern uint16_t labelStatusSectionsOnWidth;
+extern uint16_t labelStatusSections;
 
 extern bool AOG_Control;
 extern SemaphoreHandle_t i2cMutex;

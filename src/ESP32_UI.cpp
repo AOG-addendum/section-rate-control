@@ -72,7 +72,7 @@ void initESPUI ( void ) {
 
         labelStatusOutputType = ESPUI.addControl( ControlType::Label, "Output Type:", "No Output configured", ControlColor::Turquoise, tab );
         labelStatusMeter = ESPUI.addControl( ControlType::Label, "Rate Meter Input:", "No Input configured", ControlColor::Turquoise, tab );
-        labelStatusSectionsOnWidth = ESPUI.addControl( ControlType::Label, "Sections 'On' Width:", "No data from AOG", ControlColor::Turquoise, tab );
+        labelStatusSections = ESPUI.addControl( ControlType::Label, "Sections Status:", "No data from AOG", ControlColor::Turquoise, tab );
 
       }
 

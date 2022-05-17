@@ -48,7 +48,7 @@ uint16_t labelLoad;
 uint16_t labelStatusOutputType;
 uint16_t labelStatusRateControlType;
 uint16_t labelStatusMeter;
-uint16_t labelStatusSectionsOnWidth;
+uint16_t labelStatusSections;
 
 bool AOG_Control;
 ///////////////////////////////////////////////////////////////////////////

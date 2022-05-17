@@ -158,10 +158,12 @@ void initSectionControl() {
             travelData.counts += 1;
           }
         }
-        Control* labelStatusSectionsOnWidthHandle = ESPUI.getControl( labelStatusSectionsOnWidth );
+        Control* labelStatusSectionsHandle = ESPUI.getControl( labelStatusSections );
         String str;
         str.reserve( 30 );
-        str = "Section State (1...8): ";
+        str = "Control: ";
+        str += AOG_Control ? "AOG" : "Manual";
+        str += ", AOG Section State (1...8): ";
         str += sectionSetpoints.sectionState;
         if( ( SectionRateConfig::UnitType )sectionRateConfig.unitType == SectionRateConfig::UnitType::Imperial ) {
           str += ", Feet: ";
@@ -170,9 +172,9 @@ void initSectionControl() {
           str += ", Meters: ";
           str += ( double )( ( double ) sectionSetpoints.sectionsOnWidth / 10 );
         }
-        labelStatusSectionsOnWidthHandle->value = str;
-        labelStatusSectionsOnWidthHandle->color = ControlColor::Emerald;
-        ESPUI.updateControlAsync( labelStatusSectionsOnWidthHandle );
+        labelStatusSectionsHandle->value = str;
+        labelStatusSectionsHandle->color = ControlColor::Emerald;
+        ESPUI.updateControlAsync( labelStatusSectionsHandle );
       }
     } );
   }

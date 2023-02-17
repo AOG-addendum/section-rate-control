@@ -1,0 +1,160 @@
+
+
+#include <stdio.h>
+#include <string.h>
+
+#include "jsonFunctions.hpp"
+#include "main.hpp"
+
+#include <WiFi.h>
+
+#include <DNSServer.h>
+#include <ESPUI.h>
+
+#include <AsyncElegantOTA.h>
+
+
+///////////////////////////////////////////////////////////////////////////
+// global data
+///////////////////////////////////////////////////////////////////////////
+
+SectionRateConfig sectionRateConfig, sectionRateConfigDefaults;
+
+portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+
+const byte DNS_PORT = 53;
+IPAddress apIP( 192, 168, 1, 1 ); //IP address for access point
+IPAddress ipDestination( 192, 168, 50, 255 ); //IP address to send UDP data to
+
+///////////////////////////////////////////////////////////////////////////
+// external Libraries
+///////////////////////////////////////////////////////////////////////////
+ESPUIClass ESPUI( Verbosity::Quiet );
+DNSServer dnsServer;
+
+unsigned long WifiSwitchesTimer;
+bool WifiSwitchesEnabled;
+byte WifiSwitches[6];
+
+// Relays
+byte RelayLo;	// sections 0-7
+byte RelayHi;	// sections 8-15
+byte PowerRelayLo;
+byte PowerRelayHi;
+
+bool ESPconnected;
+byte ESPdebug1;
+int8_t WifiRSSI;
+uint32_t WifiTime;
+uint32_t WifiLastTime;
+
+int ControlMotor( int );
+int DoPID( int );
+void AutoControl();
+
+ModuleConfig MDL;
+SensorConfig Sensor;
+PIDConfig pidConfig, pidConfigDefaults;
+AnalogConfig AINs;
+
+///////////////////////////////////////////////////////////////////////////
+// helper functions
+///////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////
+// Application
+///////////////////////////////////////////////////////////////////////////
+
+void setup( void ) {
+  Serial.begin( 115200 );
+
+  WiFi.disconnect( true );
+
+  if( !SPIFFS.begin( true ) ) {
+    Serial.println( "SPIFFS Mount Failed" );
+    return;
+  }
+
+  loadSavedConfig();
+  loadPIDConfig();
+
+	Wire.begin();
+
+  pinMode(Sensor.FlowPin, INPUT_PULLUP);
+  pinMode(Sensor.RevPin, OUTPUT);
+  pinMode(Sensor.FwdPin, OUTPUT);
+  pinMode(Sensor.PWMPin, OUTPUT);
+
+	attachInterrupt( Sensor.FlowPin, ISR0, FALLING);
+
+  ledcSetup( 0, 1000, 8 );
+  ledcAttachPin( Sensor.PWMPin, 0 );
+  ledcWrite( 0, 0 );
+
+  Serial.updateBaudRate( sectionRateConfig.baudrate );
+  Serial.println( "Welcome to ESP32 Section Rate Control.\nTo configure, please open the WebUI." );
+
+  pinMode( sectionRateConfig.gpioWifiLed, OUTPUT );
+
+  initWiFi();
+  apIP = WiFi.localIP();
+
+  dnsServer.start( DNS_PORT, "*", apIP );
+
+  Serial.println( "\n\nWiFi parameters:" );
+  Serial.print( "Mode: " );
+  Serial.println( WiFi.getMode() == WIFI_AP ? "Station" : "Client" );
+  Serial.print( "IP address: " );
+  Serial.println( WiFi.getMode() == WIFI_AP ? WiFi.softAPIP() : WiFi.localIP() );
+
+  initESPUI();
+
+  if( sectionRateConfig.enableOTA ) {
+    AsyncElegantOTA.begin( ESPUI.server );
+  }
+
+  if ( udpSendFrom.listen( sectionRateConfig.rcPortSendFrom ))
+  {
+    Serial.print( "UDP writing to IP: " );
+    Serial.println( ipDestination );
+    Serial.print( "UDP writing to port: " );
+    Serial.println( sectionRateConfig.rcPortSendTo );
+    Serial.print( "UDP writing from port: " );
+    Serial.println( sectionRateConfig.rcPortSendFrom );
+  }
+
+  if( WiFi.status() == WL_CONNECTED ) { // digitalWrite doesn't work in Wifi callbacks
+    digitalWrite( sectionRateConfig.gpioWifiLed, HIGH );
+  }
+
+  pinMode( sectionRateConfig.gpioSection1, OUTPUT );
+  pinMode( sectionRateConfig.gpioSection2, OUTPUT );
+  pinMode( sectionRateConfig.gpioSection3, OUTPUT );
+  pinMode( sectionRateConfig.gpioSection4, OUTPUT );
+  pinMode( sectionRateConfig.gpioSection5, OUTPUT );
+  pinMode( sectionRateConfig.gpioSection6, OUTPUT );
+  pinMode( sectionRateConfig.gpioSection7, OUTPUT );
+  pinMode( sectionRateConfig.gpioSection8, OUTPUT );
+
+  pinMode( sectionRateConfig.gpioRateUp, INPUT );
+  pinMode( sectionRateConfig.gpioRateDown, INPUT );
+  pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );
+  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == HIGH ){
+    Serial.println("Automatic section control");
+    initSectionUDP();
+    initRateController();
+    initRateControlUDP();
+  } else {
+    Serial.println("Manual section control");
+    initManualRate();
+  }
+
+  initIdleStats();
+
+}
+
+void loop( void ) {
+  dnsServer.processNextRequest();
+  vTaskDelay( 100 );
+}

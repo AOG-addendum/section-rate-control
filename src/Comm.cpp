@@ -230,6 +230,11 @@ void initRateControlUDP(){
 }
 
 void initSectionUDP(){
+
+  Wire.beginTransmission(0x20);
+  Wire.write(0x00); // IODIRA register
+  Wire.write(0x00); // set entire PORT A to output
+  Wire.endTransmission();
   if( udpSectionPort.listen( sectionRateConfig.aogPortListenTo )){
     udpSectionPort.onPacket([](AsyncUDPPacket packet){
       uint8_t* data = packet.data();
@@ -240,22 +245,10 @@ void initSectionUDP(){
 			uint16_t pgn = data[3] + ( data[2] << 8 );
 			if( pgn == 32766 ){ // section control
 				sectionsOn = data[11];
-				bool state = bitRead( sectionsOn , 0);
-				digitalWrite( sectionRateConfig.gpioSection1, state);
-				state = bitRead( sectionsOn, 1);
-				digitalWrite( sectionRateConfig.gpioSection2, state);
-				state = bitRead( sectionsOn, 2);
-				digitalWrite( sectionRateConfig.gpioSection3, state);
-				state = bitRead( sectionsOn, 3);
-				digitalWrite( sectionRateConfig.gpioSection4, state);
-				state = bitRead( sectionsOn, 4);
-				digitalWrite( sectionRateConfig.gpioSection5, state);
-				state = bitRead( sectionsOn, 5);
-				digitalWrite( sectionRateConfig.gpioSection6, state);
-				state = bitRead( sectionsOn, 6);
-				digitalWrite( sectionRateConfig.gpioSection7, state);
-				state = bitRead( sectionsOn, 7);
-				digitalWrite( sectionRateConfig.gpioSection8, state);
+				Wire.beginTransmission(0x20);
+				Wire.write(0x12); // address port A
+				Wire.write( sectionsOn );  // value to send
+				Wire.endTransmission();
 			}
 		});
 	}

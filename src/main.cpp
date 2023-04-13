@@ -128,15 +128,6 @@ void setup( void ) {
     digitalWrite( sectionRateConfig.gpioWifiLed, HIGH );
   }
 
-  pinMode( sectionRateConfig.gpioSection1, OUTPUT );
-  pinMode( sectionRateConfig.gpioSection2, OUTPUT );
-  pinMode( sectionRateConfig.gpioSection3, OUTPUT );
-  pinMode( sectionRateConfig.gpioSection4, OUTPUT );
-  pinMode( sectionRateConfig.gpioSection5, OUTPUT );
-  pinMode( sectionRateConfig.gpioSection6, OUTPUT );
-  pinMode( sectionRateConfig.gpioSection7, OUTPUT );
-  pinMode( sectionRateConfig.gpioSection8, OUTPUT );
-
   pinMode( sectionRateConfig.gpioRateUp, INPUT );
   pinMode( sectionRateConfig.gpioRateDown, INPUT );
   pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );

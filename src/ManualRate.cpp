@@ -34,15 +34,20 @@ void manualRate100Hz ( void* z ) {
       digitalWrite(Sensor.RevPin, LOW);
       ledcWrite( 0, pwmSetting );
     }
+    Wire.beginTransmission(0x20);
+    Wire.write(0x13); // address PORT B
+    Wire.endTransmission();
+    Wire.requestFrom(0x20, 1); // request one byte of data
+    sectionsOn = Wire.read(); // store incoming byte into "sectionsOn"
+    sectionsUpdateMillis = millis();
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
   }
 }
 
 void initManualRate(){
-
-  Wire.beginTransmission(0x20);
-  Wire.write(0x00); // IODIRA register
-  Wire.write(0x01); // set entire PORT A to input
+  Wire.beginTransmission( 0x20 );
+  Wire.write( 0x00 ); // IODIRA register
+  Wire.write( 0x01 ); // set entire PORT A to input
   Wire.endTransmission();
 	xTaskCreate( manualRate100Hz, "manualRate", 4096, NULL, 5, NULL );
 }

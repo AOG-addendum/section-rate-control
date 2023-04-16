@@ -105,7 +105,7 @@ void SendData(){
 
 }
 
-void initRateControlUDP(){
+void initAutoRateControlUDP(){
   if( udpLocalPort.listen( sectionRateConfig.rcPortListenTo )){
     udpLocalPort.onPacket([](AsyncUDPPacket packet){
       uint8_t* Data = packet.data();
@@ -232,9 +232,9 @@ void initRateControlUDP(){
 
 void initSectionUDP(){
 
-  Wire.beginTransmission(0x20);
-  Wire.write(0x00); // IODIRA register
-  Wire.write(0x00); // set entire PORT A to output
+  Wire.beginTransmission( 0x20 );
+  Wire.write( 0x00 ); // IODIRA register
+  Wire.write( 0x00 ); // set entire PORT A to output
   Wire.endTransmission();
   if( udpSectionPort.listen( sectionRateConfig.aogPortListenTo )){
     udpSectionPort.onPacket([](AsyncUDPPacket packet){
@@ -246,9 +246,9 @@ void initSectionUDP(){
 			uint16_t pgn = data[3] + ( data[2] << 8 );
 			if( pgn == 32766 ){ // section control
 				sectionsOn = data[11];
-				Wire.beginTransmission(0x20);
-				Wire.write(0x12); // address port A
 				sectionsUpdateMillis = millis();
+				Wire.beginTransmission( 0x20 );
+				Wire.write( 0x12 ); // address port A
 				Wire.write( sectionsOn );  // value to send
 				Wire.endTransmission();
 			}

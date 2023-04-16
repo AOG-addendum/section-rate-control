@@ -137,8 +137,8 @@ void setup( void ) {
     Serial.println("Automatic section control");
     AOGcontrol = true;
     initSectionUDP();
-    initRateController();
-    initRateControlUDP();
+    initAutoRateController();
+    initAutoRateControlUDP();
   } else {
     Serial.println("Manual section control");
     initManualRate();

@@ -40,7 +40,7 @@ void rateController20Hz ( void* z ) {
 }
 
 
-void initRateController() {
+void initAutoRateController() {
 	xTaskCreate( rateController20Hz, "rateController", 4096, NULL, 5, NULL );
 }
 

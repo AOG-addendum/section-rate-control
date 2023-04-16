@@ -148,18 +148,10 @@ struct SectionRateConfig {
   char hostname[24] = "Section Control";
 
 	uint8_t gpioManualAutoSelection = 36;
-	uint8_t gpioRateUp = 19;
-  uint8_t gpioRateDown = 21;
+	uint8_t gpioRateUp = 32;
+  uint8_t gpioRateDown = 33;
 
-	uint8_t gpioSection1 = 32;
-  uint8_t gpioSection2 = 33;
-  uint8_t gpioSection3 = 25;
-  uint8_t gpioSection4 = 26;
-  uint8_t gpioSection5 = 27;
-  uint8_t gpioSection6 = 14;
-  uint8_t gpioSection7 = 12;
-  uint8_t gpioSection8 = 13;
-  uint8_t gpioWifiLed = 34;
+  uint8_t gpioWifiLed = 13;
   uint8_t WifiLedOnLevel = HIGH;    //HIGH = LED on high, LOW = LED on low
 
   uint32_t baudrate = 115200;
@@ -215,8 +207,8 @@ extern void initESPUI();
 extern void initIdleStats();
 extern void initDiagnostics();
 extern void initWiFi();
-extern void initRateController();
-extern void initRateControlUDP();
+extern void initAutoRateController();
+extern void initAutoRateControlUDP();
 extern void initSectionUDP();
 extern void initManualRate();
 

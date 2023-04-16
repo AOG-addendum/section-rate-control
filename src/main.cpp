@@ -36,6 +36,8 @@ unsigned long WifiSwitchesTimer;
 bool WifiSwitchesEnabled;
 byte WifiSwitches[6];
 
+bool AOGcontrol = false;
+
 // Relays
 byte RelayLo;	// sections 0-7
 byte RelayHi;	// sections 8-15
@@ -133,6 +135,7 @@ void setup( void ) {
   pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );
   if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == HIGH ){
     Serial.println("Automatic section control");
+    AOGcontrol = true;
     initSectionUDP();
     initRateController();
     initRateControlUDP();
@@ -142,6 +145,7 @@ void setup( void ) {
   }
 
   initIdleStats();
+  initDiagnostics();
 
 }
 

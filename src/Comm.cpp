@@ -23,6 +23,7 @@ const byte PGN32621Length = 12;
 uint32_t TestWeight = 430000;
 
 uint8_t sectionsOn = 0;
+unsigned long sectionsUpdateMillis;
 
 void SendData(){
 
@@ -247,6 +248,7 @@ void initSectionUDP(){
 				sectionsOn = data[11];
 				Wire.beginTransmission(0x20);
 				Wire.write(0x12); // address port A
+				sectionsUpdateMillis = millis();
 				Wire.write( sectionsOn );  // value to send
 				Wire.endTransmission();
 			}

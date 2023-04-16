@@ -17,10 +17,14 @@
 
 extern uint16_t labelLoad;
 extern uint16_t labelRCAppUdpData;
+extern uint16_t labelSectionStatus;
 
 extern byte Temp;
 extern unsigned int UnSignedTemp;
 extern bool AutoOn;
+extern bool AOGcontrol;
+extern uint8_t sectionsOn;
+extern unsigned long sectionsUpdateMillis;
 
 extern unsigned long WifiSwitchesTimer;
 extern bool WifiSwitchesEnabled;
@@ -209,6 +213,7 @@ extern void setResetButtonToRed();
 
 extern void initESPUI();
 extern void initIdleStats();
+extern void initDiagnostics();
 extern void initWiFi();
 extern void initRateController();
 extern void initRateControlUDP();

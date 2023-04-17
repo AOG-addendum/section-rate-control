@@ -9,6 +9,7 @@
 uint16_t labelLoad;
 uint16_t labelRCAppUdpData;
 uint16_t labelSectionStatus;
+uint16_t labelRateMotor;
 uint16_t buttonReset;
 
 void setResetButtonToRed() {
@@ -44,6 +45,7 @@ void initESPUI ( void ) {
     uint16_t tab = ESPUI.addControl( ControlType::Tab, "Diagnostics", "Diagnostics" );
 
     labelSectionStatus = ESPUI.addControl( ControlType::Label, "Section data:", "N/A", ControlColor::Turquoise, tab );
+    labelRateMotor = ESPUI.addControl( ControlType::Label, "Rate motor data:", "N/A", ControlColor::Turquoise, tab );
   }
 
   // Network Tab

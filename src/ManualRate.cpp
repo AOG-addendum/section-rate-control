@@ -8,31 +8,70 @@ void manualRate100Hz ( void* z ) {
   TickType_t xLastWakeTime = xTaskGetTickCount();
   uint8_t pwmSetting = 0;
   for( ;; ) {
-    if( digitalRead( sectionRateConfig.gpioRateUp ) == HIGH ){
-      pwmSetting += 1;
-      if( pwmSetting > 255 ){
+    if( digitalRead( sectionRateConfig.gpioRateUp ) == LOW ){
+      if( pwmSetting < 240 ){
+        pwmSetting += 10;
+      } else {
         pwmSetting = 255;
       }
       digitalWrite(Sensor.RevPin, LOW);
       delay(1);
       digitalWrite(Sensor.FwdPin, HIGH);
       ledcWrite( 0, pwmSetting );
+      {
+        Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+        String str;
+        str.reserve( 30 );
+        str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+        str += " control";
+        str += "\nIncrease flow, ";
+        str += ( uint8_t ) pwmSetting;
+        str += " PWM";
+        labelRateMotorHandle->value = str;
+        labelRateMotorHandle->color = ControlColor::Emerald;
+        ESPUI.updateControlAsync( labelRateMotorHandle );
+      }
     }
-    else if( digitalRead( sectionRateConfig.gpioRateDown ) == HIGH ){
-      pwmSetting += 1;
-      if( pwmSetting > 255 ){
+    else if( digitalRead( sectionRateConfig.gpioRateDown ) == LOW ){
+      if( pwmSetting < 240 ){
+        pwmSetting += 10;
+      } else {
         pwmSetting = 255;
       }
       digitalWrite(Sensor.FwdPin, LOW);
       delay(1);
       digitalWrite(Sensor.RevPin, HIGH);
-      ledcWrite( 0, Sensor.pwmSetting );
+      ledcWrite( 0, pwmSetting );
+      {
+        Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+        String str;
+        str.reserve( 30 );
+        str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+        str += " control";
+        str += "\nDecrease flow, ";
+        str += ( uint8_t ) pwmSetting;
+        str += " PWM";
+        labelRateMotorHandle->value = str;
+        labelRateMotorHandle->color = ControlColor::Emerald;
+        ESPUI.updateControlAsync( labelRateMotorHandle );
+      }
     }
     else{
       pwmSetting = 0;
       digitalWrite(Sensor.FwdPin, LOW);
       digitalWrite(Sensor.RevPin, LOW);
       ledcWrite( 0, pwmSetting );
+      {
+        Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+        String str;
+        str.reserve( 30 );
+        str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+        str += " control";
+        str += "\nMaintaining flow";
+        labelRateMotorHandle->value = str;
+        labelRateMotorHandle->color = ControlColor::Emerald;
+        ESPUI.updateControlAsync( labelRateMotorHandle );
+      }
     }
     Wire.beginTransmission(0x20);
     Wire.write(0x13); // address PORT B

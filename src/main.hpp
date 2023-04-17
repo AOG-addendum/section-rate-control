@@ -18,6 +18,7 @@
 extern uint16_t labelLoad;
 extern uint16_t labelRCAppUdpData;
 extern uint16_t labelSectionStatus;
+extern uint16_t labelRateMotor;
 
 extern byte Temp;
 extern unsigned int UnSignedTemp;

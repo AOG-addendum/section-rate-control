@@ -19,17 +19,17 @@ void manualRate100Hz ( void* z ) {
       digitalWrite(Sensor.FwdPin, HIGH);
       ledcWrite( 0, pwmSetting );
       {
-        Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+        Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
         String str;
         str.reserve( 30 );
-        str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+        str = AOGrateControl ? "Automatic (AOG)" : "Manual";
         str += " control";
         str += "\nIncrease flow, ";
         str += ( uint8_t ) pwmSetting;
         str += " PWM";
-        labelRateMotorHandle->value = str;
-        labelRateMotorHandle->color = ControlColor::Emerald;
-        ESPUI.updateControlAsync( labelRateMotorHandle );
+        labelRateValveHandle->value = str;
+        labelRateValveHandle->color = ControlColor::Emerald;
+        ESPUI.updateControlAsync( labelRateValveHandle );
       }
     }
     else if( digitalRead( sectionRateConfig.gpioRateDown ) == LOW ){
@@ -43,17 +43,17 @@ void manualRate100Hz ( void* z ) {
       digitalWrite(Sensor.RevPin, HIGH);
       ledcWrite( 0, pwmSetting );
       {
-        Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+        Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
         String str;
         str.reserve( 30 );
-        str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+        str = AOGrateControl ? "Automatic (AOG)" : "Manual";
         str += " control";
         str += "\nDecrease flow, ";
         str += ( uint8_t ) pwmSetting;
         str += " PWM";
-        labelRateMotorHandle->value = str;
-        labelRateMotorHandle->color = ControlColor::Emerald;
-        ESPUI.updateControlAsync( labelRateMotorHandle );
+        labelRateValveHandle->value = str;
+        labelRateValveHandle->color = ControlColor::Emerald;
+        ESPUI.updateControlAsync( labelRateValveHandle );
       }
     }
     else{
@@ -62,15 +62,15 @@ void manualRate100Hz ( void* z ) {
       digitalWrite(Sensor.RevPin, LOW);
       ledcWrite( 0, pwmSetting );
       {
-        Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+        Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
         String str;
         str.reserve( 30 );
-        str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+        str = AOGrateControl ? "Automatic (AOG)" : "Manual";
         str += " control";
         str += "\nMaintaining flow";
-        labelRateMotorHandle->value = str;
-        labelRateMotorHandle->color = ControlColor::Emerald;
-        ESPUI.updateControlAsync( labelRateMotorHandle );
+        labelRateValveHandle->value = str;
+        labelRateValveHandle->color = ControlColor::Emerald;
+        ESPUI.updateControlAsync( labelRateValveHandle );
       }
     }
     Wire.beginTransmission(0x20);

@@ -62,17 +62,17 @@ void AdjustFlow(){
             digitalWrite(Sensor.FwdPin, HIGH);
             ledcWrite( 0, Sensor.pwmSetting );
             {
-                Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+                Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
                 String str;
                 str.reserve( 30 );
-                str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+                str = AOGrateControl ? "Automatic (AOG)" : "Manual";
                 str += " control";
                 str += "\nIncrease flow, ";
                 str += ( uint8_t ) Sensor.pwmSetting;
                 str += " PWM";
-                labelRateMotorHandle->value = str;
-                labelRateMotorHandle->color = ControlColor::Emerald;
-                ESPUI.updateControlAsync( labelRateMotorHandle );
+                labelRateValveHandle->value = str;
+                labelRateValveHandle->color = ControlColor::Emerald;
+                ESPUI.updateControlAsync( labelRateValveHandle );
             }
         }
         else if (Sensor.pwmSetting < 0) {
@@ -82,17 +82,17 @@ void AdjustFlow(){
             digitalWrite(Sensor.RevPin, HIGH);
             ledcWrite( 0, -Sensor.pwmSetting );	// offsets the negative pwm value
             {
-                Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+                Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
                 String str;
                 str.reserve( 30 );
-                str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+                str = AOGrateControl ? "Automatic (AOG)" : "Manual";
                 str += " control";
                 str += "\nDecrease flow, ";
                 str += ( uint8_t ) -Sensor.pwmSetting;
                 str += " PWM";
-                labelRateMotorHandle->value = str;
-                labelRateMotorHandle->color = ControlColor::Emerald;
-                ESPUI.updateControlAsync( labelRateMotorHandle );
+                labelRateValveHandle->value = str;
+                labelRateValveHandle->color = ControlColor::Emerald;
+                ESPUI.updateControlAsync( labelRateValveHandle );
             }
         } else {
             digitalWrite(Sensor.FwdPin, LOW);
@@ -100,15 +100,15 @@ void AdjustFlow(){
             digitalWrite(Sensor.RevPin, LOW);
             ledcWrite( 0, 0 );	// offsets the negative pwm value            
             {
-                Control* labelRateMotorHandle = ESPUI.getControl( labelRateMotor );
+                Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
                 String str;
                 str.reserve( 30 );
-                str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+                str = AOGrateControl ? "Automatic (AOG)" : "Manual";
                 str += " control";
                 str += "\nMaintaining flow";
-                labelRateMotorHandle->value = str;
-                labelRateMotorHandle->color = ControlColor::Emerald;
-                ESPUI.updateControlAsync( labelRateMotorHandle );
+                labelRateValveHandle->value = str;
+                labelRateValveHandle->color = ControlColor::Emerald;
+                ESPUI.updateControlAsync( labelRateValveHandle );
             }
         }
         break;

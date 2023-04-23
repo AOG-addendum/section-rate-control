@@ -164,6 +164,7 @@ struct SectionRateConfig {
   uint16_t rcPortSendTo = 29999;
   uint16_t aogPortListenTo = 8888;
 
+	bool invertRateMotor = false;
   bool retainWifiSettings = true;
 };
 extern SectionRateConfig sectionRateConfig, sectionRateConfigDefaults;

@@ -3,6 +3,9 @@
 #include "main.hpp"
 
 void AdjustFlow(){
+    if( sectionRateConfig.invertRateMotor == true ){
+        Sensor.pwmSetting = Sensor.pwmSetting * -1;
+    }
     switch (Sensor.ControlType) {
     case 1:
         // fast close valve, used for flow control and on/off

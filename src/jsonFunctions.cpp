@@ -103,6 +103,7 @@ json parseSectionRateConfigToJson( const SectionRateConfig& config ) {
   j["connection"]["rc"]["sendTo"] = config.rcPortSendTo;
   j["connection"]["aog"]["listenTo"] = config.aogPortListenTo;
 
+  j["settings"]["invertRateMotor"] = config.invertRateMotor;
   return j;
 }
 
@@ -134,6 +135,7 @@ void parseJsonToSectionRateConfig( json& j, SectionRateConfig& config ) {
       config.rcPortSendTo = j.value( "/connection/rc/sendTo"_json_pointer, sectionRateConfigDefaults.rcPortSendTo );
       config.aogPortListenTo = j.value( "/connection/aog/listenTo"_json_pointer, sectionRateConfigDefaults.aogPortListenTo );
 
+      config.invertRateMotor = j.value( "/settings/invertRateMotor"_json_pointer, sectionRateConfigDefaults.invertRateMotor );
     } catch( json::exception& e ) {
       // output exception information
       Serial.print( "message: " );

@@ -96,6 +96,15 @@ void initESPUI ( void ) {
     } );
   }
 
+  // Settings Tab
+  {
+    uint16_t tab = ESPUI.addControl( ControlType::Tab, "Settings", "Settings" );
+    {
+      ESPUI.addControl( ControlType::Switcher, "Invert rate motor", sectionRateConfig.invertRateMotor ? "1" : "0", ControlColor::Peterriver, tab,
+      []( Control * control, int id ) {
+        sectionRateConfig.invertRateMotor = control->value.toInt() == 1;
+      } );
+    }
   // Default Configurations Tab
   {
     uint16_t tab = ESPUI.addControl( ControlType::Tab, "Configurations", "Configurations" );

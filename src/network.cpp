@@ -87,7 +87,7 @@ void initWiFi( void ){
 
       digitalWrite( sectionRateConfig.gpioWifiLed, LOW );
 
-      apName = String( "Section / Rate control " );
+      apName = String( "Section - Rate control " );
       apName += WiFi.macAddress();
       apName.replace( ":", "" );
 
@@ -96,7 +96,7 @@ void initWiFi( void ){
       Serial.println( "\"" );
       WiFi.mode( WIFI_MODE_APSTA );
       delay( 25 );
-      WiFi.softAP( apName.c_str(), "password" );
+      WiFi.softAP( apName.c_str() );
       WiFi.begin( sectionRateConfig.ssid, sectionRateConfig.password );
       while ( !SYSTEM_EVENT_AP_START ){ // wait until AP has started
           delay( 100);

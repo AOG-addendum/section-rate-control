@@ -2,8 +2,12 @@
 
 #include "main.hpp"
 
+volatile bool state;
+volatile bool previousState;
 volatile unsigned long Duration;
 volatile unsigned long PulseCount;
+volatile unsigned long PulseTime;
+volatile unsigned long totalPulseCount;
 uint32_t LastPulse;
 
 unsigned long TimedCounts;
@@ -24,11 +28,13 @@ unsigned long Omax2;
 unsigned long Omin2;
 
 void IRAM_ATTR ISR0(){
-	static unsigned long PulseTime;
-	if (millis() - PulseTime > 10){
+	state = digitalRead( ( uint8_t )Sensor.FlowPin );
+	if (previousState != state){
+		previousState = state;
 		Duration = millis() - PulseTime;
 		PulseTime = millis();
 		PulseCount++;
+		totalPulseCount++;
 	}
 }
 

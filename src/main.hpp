@@ -19,6 +19,7 @@ extern uint16_t labelLoad;
 extern uint16_t labelRCAppUdpData;
 extern uint16_t labelSectionStatus;
 extern uint16_t labelRateMotor;
+extern uint16_t labelRateMeter;
 
 extern byte Temp;
 extern unsigned int UnSignedTemp;
@@ -39,6 +40,11 @@ extern bool DebugOn;
 extern bool MasterOn[2];
 extern bool IOexpanderFound;
 extern byte PGNlength;
+
+extern volatile unsigned long PulseCount;
+extern volatile unsigned long Duration;
+extern volatile unsigned long PulseTime;
+extern volatile unsigned long totalPulseCount;
 
 struct ModuleConfig	{
 	uint8_t ID = 0;

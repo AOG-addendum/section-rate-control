@@ -36,7 +36,8 @@ unsigned long WifiSwitchesTimer;
 bool WifiSwitchesEnabled;
 byte WifiSwitches[6];
 
-bool AOGcontrol = false;
+bool AOGsectionControl = false;
+bool AOGrateControl = false;
 
 // Relays
 byte RelayLo;	// sections 0-7
@@ -135,12 +136,27 @@ void setup( void ) {
   pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );
   if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == HIGH ){
     Serial.println("Automatic section control");
-    AOGcontrol = true;
+    AOGsectionControl = true;
     initSectionUDP();
-    initAutoRateController();
-    initAutoRateControlUDP();
+    if( sectionRateConfig.rateControlAlwaysManual == true ){
+      Serial.println("Manual rate control");
+      AOGrateControl = false;
+      initManualRate();
+    } else {
+      Serial.println("Automatic rate control");
+      AOGrateControl = true;
+      initAutoRateController();
+      initAutoRateControlUDP();
+    }
   } else {
     Serial.println("Manual section control");
+    Serial.println("Manual rate control");
+    AOGsectionControl = false;
+    AOGrateControl = false;
+    Wire.beginTransmission( 0x20 );
+    Wire.write( 0x00 ); // IODIRA register
+    Wire.write( 0x01 ); // set entire PORT A to input
+    Wire.endTransmission();
     initManualRate();
   }
 

@@ -15,7 +15,7 @@ void diagnosticWorker10Hz( void* z ) {
       Control* labelSectionsStatusHandle = ESPUI.getControl( labelSectionStatus );
       String str;
       str.reserve( 30 );
-      str = AOGcontrol ? "Automatic (AOG)" : "Manual";
+      str = AOGsectionControl ? "Automatic (AOG)" : "Manual";
       str += " control";
       str += "\nAOG section state (1...8) ";
       for( int i = 0; i < 8; i++ ){

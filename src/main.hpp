@@ -24,7 +24,8 @@ extern uint16_t labelRateMeter;
 extern byte Temp;
 extern unsigned int UnSignedTemp;
 extern bool AutoOn;
-extern bool AOGcontrol;
+extern bool AOGsectionControl;
+extern bool AOGrateControl;
 extern uint8_t sectionsOn;
 extern unsigned long sectionsUpdateMillis;
 
@@ -171,6 +172,8 @@ struct SectionRateConfig {
   uint16_t aogPortListenTo = 8888;
 
 	bool invertRateMotor = false;
+	bool rateControlAlwaysManual = false;
+
   bool retainWifiSettings = true;
 };
 extern SectionRateConfig sectionRateConfig, sectionRateConfigDefaults;

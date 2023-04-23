@@ -107,6 +107,14 @@ void initESPUI ( void ) {
         sectionRateConfig.invertRateMotor = control->value.toInt() == 1;
       } );
     }
+    {
+      ESPUI.addControl( ControlType::Switcher, "Rate control always manual", sectionRateConfig.rateControlAlwaysManual ? "1" : "0", ControlColor::Peterriver, tab,
+      []( Control * control, int id ) {
+        sectionRateConfig.rateControlAlwaysManual = control->value.toInt() == 1;
+      } );
+    }
+  }
+
   // Default Configurations Tab
   {
     uint16_t tab = ESPUI.addControl( ControlType::Tab, "Configurations", "Configurations" );

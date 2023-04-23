@@ -22,8 +22,14 @@ void diagnosticWorker10Hz( void* z ) {
        str += ( String )( bitRead( sectionsOn, i ));
       }
       str += "\nUpdated ";
-      str += ( String )(( millis() - sectionsUpdateMillis ) / 1000 );
-      str += " seconds ago";
+      unsigned long time = millis() - sectionsUpdateMillis;
+      if( time > 1000 ){
+        str += ( String )( time / 1000 );
+        str += " seconds ago";
+      } else {
+        str += ( String )( time );
+        str += " milliseconds ago";
+      }
       labelSectionsStatusHandle->value = str;
       labelSectionsStatusHandle->color = ControlColor::Emerald;
       ESPUI.updateControlAsync( labelSectionsStatusHandle );

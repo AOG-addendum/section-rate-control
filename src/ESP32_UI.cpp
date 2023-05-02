@@ -11,6 +11,7 @@ uint16_t labelRCAppUdpData;
 uint16_t labelSectionStatus;
 uint16_t labelRateValve;
 uint16_t labelRateMeter;
+uint16_t labelBuildDate;
 uint16_t buttonReset;
 
 void setResetButtonToRed() {
@@ -48,6 +49,10 @@ void initESPUI ( void ) {
     labelSectionStatus = ESPUI.addControl( ControlType::Label, "Section data:", "N/A", ControlColor::Turquoise, tab );
     labelRateValve = ESPUI.addControl( ControlType::Label, "Rate motor/valve data:", "N/A", ControlColor::Turquoise, tab );
     labelRateMeter = ESPUI.addControl( ControlType::Label, "Rate meter data:", "N/A", ControlColor::Turquoise, tab );
+    String buildDate = String(__DATE__);
+    buildDate += String(" ");
+    buildDate += String(__TIME__);
+    labelBuildDate = ESPUI.addControl( ControlType::Label, "Build date:", buildDate, ControlColor::Turquoise, tab );
   }
 
   // Network Tab

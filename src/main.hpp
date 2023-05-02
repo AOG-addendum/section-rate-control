@@ -20,6 +20,7 @@ extern uint16_t labelRCAppUdpData;
 extern uint16_t labelSectionStatus;
 extern uint16_t labelRateValve;
 extern uint16_t labelRateMeter;
+extern uint16_t labelBuildDate;
 
 extern byte Temp;
 extern unsigned int UnSignedTemp;

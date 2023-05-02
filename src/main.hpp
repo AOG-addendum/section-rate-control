@@ -220,8 +220,9 @@ extern void initDiagnostics();
 extern void initWiFi();
 extern void initAutoRateController();
 extern void initAutoRateControlUDP();
-extern void initSectionUDP();
+extern void initAutoSectionUDP();
 extern void initManualRate();
+extern void initManualSection();
 extern void initFlowMeterInterrupts();
 
 extern void GetUPM();

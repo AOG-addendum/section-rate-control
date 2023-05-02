@@ -73,12 +73,6 @@ void manualRate100Hz ( void* z ) {
         ESPUI.updateControlAsync( labelRateValveHandle );
       }
     }
-    Wire.beginTransmission(0x20);
-    Wire.write(0x13); // address PORT B
-    Wire.endTransmission();
-    Wire.requestFrom(0x20, 1); // request one byte of data
-    sectionsOn = Wire.read(); // store incoming byte into "sectionsOn"
-    sectionsUpdateMillis = millis();
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
   }
 }

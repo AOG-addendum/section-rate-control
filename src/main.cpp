@@ -136,7 +136,7 @@ void setup( void ) {
   if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == HIGH ){
     Serial.println("Automatic section control");
     AOGsectionControl = true;
-    initSectionUDP();
+    initAutoSectionUDP();
     if( sectionRateConfig.rateControlAlwaysManual == true ){
       Serial.println("Manual rate control");
       AOGrateControl = false;
@@ -157,6 +157,7 @@ void setup( void ) {
     Wire.write( 0x01 ); // set entire PORT A to input
     Wire.endTransmission();
     initManualRate();
+    initManualSection();
   }
 
   initIdleStats();

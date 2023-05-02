@@ -168,4 +168,8 @@ void setup( void ) {
 void loop( void ) {
   dnsServer.processNextRequest();
   vTaskDelay( 100 );
+  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) != AOGsectionControl ){
+    Serial.println("\nAuto/Manual switch changed, restarting...\n");
+    ESP.restart();
+  }
 }

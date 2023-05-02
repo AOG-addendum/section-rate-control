@@ -63,7 +63,7 @@ struct ModuleConfig	{
 extern ModuleConfig MDL;
 
 struct SensorConfig	{
-	uint8_t FlowPin = 39;
+	uint8_t FlowPin = 34;
   uint8_t	FwdPin = 17;
 	uint8_t	RevPin = 16;
 	uint8_t	PWMPin = 15;
@@ -222,8 +222,8 @@ extern void initAutoRateController();
 extern void initAutoRateControlUDP();
 extern void initSectionUDP();
 extern void initManualRate();
+extern void initFlowMeterInterrupts();
 
-extern void IRAM_ATTR ISR0();
 extern void GetUPM();
 extern void CheckRelays();
 extern void AdjustFlow();

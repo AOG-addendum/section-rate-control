@@ -84,12 +84,11 @@ void setup( void ) {
 
 	Wire.begin();
 
-  pinMode(Sensor.FlowPin, INPUT_PULLUP);
   pinMode(Sensor.RevPin, OUTPUT);
   pinMode(Sensor.FwdPin, OUTPUT);
   pinMode(Sensor.PWMPin, OUTPUT);
 
-	attachInterrupt( Sensor.FlowPin, ISR0, FALLING);
+  initFlowMeterInterrupts();
 
   ledcSetup( 0, 1000, 8 );
   ledcAttachPin( Sensor.PWMPin, 0 );

@@ -2,8 +2,7 @@
 
 #include "main.hpp"
 
-volatile bool state;
-volatile bool previousState;
+bool previousState;
 volatile unsigned long Duration;
 volatile unsigned long PulseCount;
 volatile unsigned long PulseTime;
@@ -26,17 +25,6 @@ byte Ocount;
 float Oave;
 unsigned long Omax2;
 unsigned long Omin2;
-
-void IRAM_ATTR ISR0(){
-	state = digitalRead( ( uint8_t )Sensor.FlowPin );
-	if (previousState != state){
-		previousState = state;
-		Duration = millis() - PulseTime;
-		PulseTime = millis();
-		PulseCount++;
-		totalPulseCount++;
-	}
-}
 
 void GetUPM(){
 	if (Sensor.ControlType == 3){
@@ -121,4 +109,21 @@ void GetUPMflow(){
 	}
 }
 
+void IRAM_ATTR ISR0(){
+	bool state = digitalRead( Sensor.FlowPin );
+	if( previousState != state ){
+		previousState = state;
+		if( state == HIGH ){
+			Duration = millis() - PulseTime;
+			PulseTime = millis();
+			PulseCount++;
+			totalPulseCount++;
+		}
+	}
+}
+
+void initFlowMeterInterrupts(){
+	pinMode( Sensor.FlowPin, INPUT);
+	attachInterrupt( digitalPinToInterrupt( Sensor.FlowPin ), ISR0, CHANGE);
+}
 

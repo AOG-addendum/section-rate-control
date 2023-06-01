@@ -133,7 +133,7 @@ void setup( void ) {
   pinMode( sectionRateConfig.gpioRateUp, INPUT );
   pinMode( sectionRateConfig.gpioRateDown, INPUT );
   pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );
-  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == HIGH ){
+  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == LOW ){
     Serial.println("Automatic section control");
     AOGsectionControl = true;
     initAutoSectionUDP();
@@ -168,7 +168,7 @@ void setup( void ) {
 void loop( void ) {
   dnsServer.processNextRequest();
   vTaskDelay( 100 );
-  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) != AOGsectionControl ){
+  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == AOGsectionControl ){
     Serial.println("\nAuto/Manual switch changed, restarting...\n");
     ESP.restart();
   }

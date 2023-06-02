@@ -3,21 +3,22 @@
 #include "main.hpp"
 #include "jsonFunctions.hpp"
 
+uint8_t manualPWM = 0;
+
 void manualRate100Hz ( void* z ) {
   constexpr TickType_t xFrequency = 10;
   TickType_t xLastWakeTime = xTaskGetTickCount();
-  uint8_t pwmSetting = 0;
   for( ;; ) {
     if( digitalRead( sectionRateConfig.gpioRateUp ) == LOW ){
-      if( pwmSetting < 240 ){
-        pwmSetting += 10;
+      if( manualPWM < 240 ){
+        manualPWM += 10;
       } else {
-        pwmSetting = 255;
+        manualPWM = 255;
       }
       digitalWrite(Sensor.RevPin, LOW);
       delay(1);
       digitalWrite(Sensor.FwdPin, HIGH);
-      ledcWrite( 0, pwmSetting );
+      ledcWrite( 0, manualPWM );
       {
         Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
         String str;
@@ -25,7 +26,7 @@ void manualRate100Hz ( void* z ) {
         str = AOGrateControl ? "Automatic (AOG)" : "Manual";
         str += " control";
         str += "\nIncrease flow, ";
-        str += ( uint8_t ) pwmSetting;
+        str += ( uint8_t ) manualPWM;
         str += " PWM";
         labelRateValveHandle->value = str;
         labelRateValveHandle->color = ControlColor::Emerald;
@@ -33,15 +34,15 @@ void manualRate100Hz ( void* z ) {
       }
     }
     else if( digitalRead( sectionRateConfig.gpioRateDown ) == LOW ){
-      if( pwmSetting < 240 ){
-        pwmSetting += 10;
+      if( manualPWM < 240 ){
+        manualPWM += 10;
       } else {
-        pwmSetting = 255;
+        manualPWM = 255;
       }
       digitalWrite(Sensor.FwdPin, LOW);
       delay(1);
       digitalWrite(Sensor.RevPin, HIGH);
-      ledcWrite( 0, pwmSetting );
+      ledcWrite( 0, manualPWM );
       {
         Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
         String str;
@@ -49,7 +50,7 @@ void manualRate100Hz ( void* z ) {
         str = AOGrateControl ? "Automatic (AOG)" : "Manual";
         str += " control";
         str += "\nDecrease flow, ";
-        str += ( uint8_t ) pwmSetting;
+        str += ( uint8_t ) manualPWM;
         str += " PWM";
         labelRateValveHandle->value = str;
         labelRateValveHandle->color = ControlColor::Emerald;
@@ -57,10 +58,10 @@ void manualRate100Hz ( void* z ) {
       }
     }
     else{
-      pwmSetting = 0;
+      manualPWM = 0;
       digitalWrite(Sensor.FwdPin, LOW);
       digitalWrite(Sensor.RevPin, LOW);
-      ledcWrite( 0, pwmSetting );
+      ledcWrite( 0, manualPWM );
       {
         Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
         String str;

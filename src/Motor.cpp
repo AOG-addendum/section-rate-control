@@ -61,19 +61,6 @@ void AdjustFlow(){
             delay(1);
             digitalWrite(Sensor.FwdPin, HIGH);
             ledcWrite( 0, Sensor.pwmSetting );
-            {
-                Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
-                String str;
-                str.reserve( 30 );
-                str = AOGrateControl ? "Automatic (AOG)" : "Manual";
-                str += " control";
-                str += "\nIncrease flow, ";
-                str += ( uint8_t ) Sensor.pwmSetting;
-                str += " PWM";
-                labelRateValveHandle->value = str;
-                labelRateValveHandle->color = ControlColor::Emerald;
-                ESPUI.updateControlAsync( labelRateValveHandle );
-            }
         }
         else if (Sensor.pwmSetting < 0) {
             //decrease
@@ -81,35 +68,11 @@ void AdjustFlow(){
             delay(1);
             digitalWrite(Sensor.RevPin, HIGH);
             ledcWrite( 0, -Sensor.pwmSetting );	// offsets the negative pwm value
-            {
-                Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
-                String str;
-                str.reserve( 30 );
-                str = AOGrateControl ? "Automatic (AOG)" : "Manual";
-                str += " control";
-                str += "\nDecrease flow, ";
-                str += ( uint8_t ) -Sensor.pwmSetting;
-                str += " PWM";
-                labelRateValveHandle->value = str;
-                labelRateValveHandle->color = ControlColor::Emerald;
-                ESPUI.updateControlAsync( labelRateValveHandle );
-            }
         } else {
             digitalWrite(Sensor.FwdPin, LOW);
             delay(1);
             digitalWrite(Sensor.RevPin, LOW);
             ledcWrite( 0, 0 );	// offsets the negative pwm value            
-            {
-                Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
-                String str;
-                str.reserve( 30 );
-                str = AOGrateControl ? "Automatic (AOG)" : "Manual";
-                str += " control";
-                str += "\nMaintaining flow";
-                labelRateValveHandle->value = str;
-                labelRateValveHandle->color = ControlColor::Emerald;
-                ESPUI.updateControlAsync( labelRateValveHandle );
-            }
         }
         break;
     }

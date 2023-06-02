@@ -131,6 +131,8 @@ extern uint32_t WifiLastTime;
 extern byte ESPdebug1;
 extern bool ESPconnected;
 
+extern uint8_t manualPWM;
+
 // MCP23017 pins RC5, RC8
 #define Relay1 0
 #define Relay2 1

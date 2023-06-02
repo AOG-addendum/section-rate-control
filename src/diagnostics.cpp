@@ -55,6 +55,53 @@ void diagnosticWorker10Hz( void* z ) {
       labelRateMeterStatusHandle->color = ControlColor::Emerald;
       ESPUI.updateControlAsync( labelRateMeterStatusHandle );
     }
+    {
+      Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
+      String str;
+      str.reserve( 30 );
+      if( AOGrateControl == true ){
+        str = "Automatic (AOG) control\n";
+        if( Sensor.pwmSetting > 0 ){
+          str += "Increase flow, ";
+          str += ( uint8_t ) Sensor.pwmSetting;
+          str += " PWM\n";
+        }
+        else if( Sensor.pwmSetting < 0 ){
+          str += "Decrease flow, ";
+          str += ( uint8_t ) Sensor.pwmSetting;
+          str += " PWM\n";
+        } else {
+          str += "Maintaining flow\n";
+        }
+        str += "Updated ";
+        unsigned long time = millis() - Sensor.CommTime;
+        if( time > 1000 ){
+            str += ( String )( time / 1000 );
+            str += " seconds ago";
+        } else {
+            str += ( String )( time );
+            str += " milliseconds ago";
+        }
+      } else {
+        str = "Manual control\n";
+        if( digitalRead( sectionRateConfig.gpioRateUp ) == LOW ){
+          str += "Increase flow, ";
+          str += ( uint8_t ) manualPWM;
+          str += " PWM";
+        }
+        else if( digitalRead( sectionRateConfig.gpioRateDown ) == LOW ){
+          str += "Decrease flow, ";
+          str += ( uint8_t ) manualPWM;
+          str += " PWM";
+        }
+        else {
+          str += "Maintaining flow";
+        }
+      }
+      labelRateValveHandle->value = str;
+      labelRateValveHandle->color = ControlColor::Emerald;
+      ESPUI.updateControlAsync( labelRateValveHandle );
+    }
     vTaskDelayUntil( &xLastWakeTime, xFrequency );
   }
 }

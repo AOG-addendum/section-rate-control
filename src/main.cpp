@@ -153,8 +153,8 @@ void setup( void ) {
     AOGsectionControl = false;
     AOGrateControl = false;
     Wire.beginTransmission( 0x20 );
-    Wire.write( 0x00 ); // IODIRA register
-    Wire.write( 0x01 ); // set entire PORT A to input
+    Wire.write( 0x12 ); // address port A
+    Wire.write( 0 );  // all sections pulled down
     Wire.endTransmission();
     initManualRate();
     initManualSection();

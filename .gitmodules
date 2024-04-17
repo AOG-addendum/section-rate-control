@@ -4,3 +4,6 @@
 [submodule "tools/EspArduinoExceptionDecoder"]
 	path = tools/EspArduinoExceptionDecoder
 	url = https://github.com/me21/EspArduinoExceptionDecoder.git
+[submodule "lib/DOGL"]
+	path = lib/DOGL
+	url = https://github.com/AOG-addendum/DOGL

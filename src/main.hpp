@@ -64,11 +64,11 @@ struct ModuleConfig	{
 extern ModuleConfig MDL;
 
 struct SensorConfig	{
-	uint8_t FlowPin = 34;
-  	uint8_t	FwdPin = 17;
-	uint8_t	RevPin = 16;
-	uint8_t	PWMPin = 15;
-  	uint8_t	DirPin = 35; 
+	uint8_t FlowPin = 23;
+  	uint8_t	FwdPin = 27;
+	uint8_t	RevPin = 4;
+	uint8_t	PWMPin = 25;
+  	uint8_t	DirPin = 35;
 	bool MasterOn = false;
 	bool FlowEnabled = false;
 	float RateError = 0;		// rate error X 1000
@@ -87,6 +87,11 @@ struct SensorConfig	{
 	byte CalPWM = 0;
 };
 extern SensorConfig Sensor;
+
+struct SectionConfig {
+	uint8_t rowOne = 26;
+};
+extern SectionConfig sectionConfig;
 
 struct PIDConfig {
 	byte KP = 20;
@@ -158,10 +163,6 @@ struct SectionRateConfig {
   char password[24] = "password";
   char hostname[24] = "Section Control";
 
-  uint8_t gpioManualAutoSelection = 36;
-  uint8_t gpioRateUp = 32;
-  uint8_t gpioRateDown = 33;
-
   uint8_t gpioWifiLed = 13;
   uint8_t WifiLedOnLevel = HIGH;    //HIGH = LED on high, LOW = LED on low
 
@@ -175,7 +176,6 @@ struct SectionRateConfig {
   uint16_t aogPortListenTo = 8888;
 
   bool invertRateMotor = false;
-  bool rateControlAlwaysManual = false;
 
   bool retainWifiSettings = true;
 };
@@ -224,8 +224,6 @@ extern void initWiFi();
 extern void initAutoRateController();
 extern void initAutoRateControlUDP();
 extern void initAutoSectionUDP();
-extern void initManualRate();
-extern void initManualSection();
 extern void initFlowMeterInterrupts();
 
 extern void GetUPM();

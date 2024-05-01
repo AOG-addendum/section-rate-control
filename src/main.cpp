@@ -130,35 +130,12 @@ void setup( void ) {
     digitalWrite( sectionRateConfig.gpioWifiLed, HIGH );
   }
 
-  pinMode( sectionRateConfig.gpioRateUp, INPUT );
-  pinMode( sectionRateConfig.gpioRateDown, INPUT );
-  pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );
-  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == HIGH ){
-    Serial.println("Automatic section control");
-    AOGsectionControl = true;
-    initAutoSectionUDP();
-    if( sectionRateConfig.rateControlAlwaysManual == true ){
-      Serial.println("Manual rate control");
-      AOGrateControl = false;
-      initManualRate();
-    } else {
-      Serial.println("Automatic rate control");
-      AOGrateControl = true;
-      initAutoRateController();
-      initAutoRateControlUDP();
-    }
-  } else {
-    Serial.println("Manual section control");
-    Serial.println("Manual rate control");
-    AOGsectionControl = false;
-    AOGrateControl = false;
-    Wire.beginTransmission( 0x20 );
-    Wire.write( 0x12 ); // address port A
-    Wire.write( 0 );  // all sections pulled down
-    Wire.endTransmission();
-    initManualRate();
-    initManualSection();
-  }
+  Serial.println("Automatic section control");
+  AOGsectionControl = true;
+  AOGrateControl = true;
+  initAutoSectionUDP();
+  initAutoRateController();
+  initAutoRateControlUDP();
 
   initIdleStats();
   initDiagnostics();
@@ -168,8 +145,4 @@ void setup( void ) {
 void loop( void ) {
   dnsServer.processNextRequest();
   vTaskDelay( 100 );
-  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) != AOGsectionControl ){
-    Serial.println("\nAuto/Manual switch changed, restarting...\n");
-    ESP.restart();
-  }
 }

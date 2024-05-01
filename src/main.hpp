@@ -65,10 +65,10 @@ extern ModuleConfig MDL;
 
 struct SensorConfig	{
 	uint8_t FlowPin = 34;
-  uint8_t	FwdPin = 17;
+  	uint8_t	FwdPin = 17;
 	uint8_t	RevPin = 16;
 	uint8_t	PWMPin = 15;
-  uint8_t	DirPin = 35; 
+  	uint8_t	DirPin = 35; 
 	bool MasterOn = false;
 	bool FlowEnabled = false;
 	float RateError = 0;		// rate error X 1000
@@ -158,8 +158,8 @@ struct SectionRateConfig {
   char password[24] = "password";
   char hostname[24] = "Section Control";
 
-	uint8_t gpioManualAutoSelection = 36;
-	uint8_t gpioRateUp = 32;
+  uint8_t gpioManualAutoSelection = 36;
+  uint8_t gpioRateUp = 32;
   uint8_t gpioRateDown = 33;
 
   uint8_t gpioWifiLed = 13;
@@ -174,8 +174,8 @@ struct SectionRateConfig {
   uint16_t rcPortSendTo = 29999;
   uint16_t aogPortListenTo = 8888;
 
-	bool invertRateMotor = false;
-	bool rateControlAlwaysManual = false;
+  bool invertRateMotor = false;
+  bool rateControlAlwaysManual = false;
 
   bool retainWifiSettings = true;
 };

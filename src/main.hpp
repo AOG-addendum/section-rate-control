@@ -4,6 +4,7 @@
 
 #include <WiFi.h>
 #include <WiFiMulti.h>
+#include "SPIFFS.h"
 
 #include <HTTPClient.h>
 

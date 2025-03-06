@@ -11,15 +11,28 @@
 
 void loadSavedConfig() {
   {
-    auto j = loadJsonFromFile( "/config.json" );
-    parseJsonToSectionRateConfig( j, sectionRateConfig );
+    if( SPIFFS.exists( "/sectionRate.json" ) ) {
+      auto j = loadJsonFromFile( "/sectionRate.json" );
+      parseJsonToSectionRateConfig( j, sectionRateConfig );
+    }
+    else if( SPIFFS.exists( "/config.json" ) ){ // import from old config
+      auto j = loadJsonFromFile( "/config.json" );
+      parseJsonToSectionRateConfig( j, sectionRateConfig );
+      saveJsonToFile( j, "/sectionRate.json" ); // auto save file for next boot
+      SPIFFS.remove( "/config.json" ); // remove config.json ->
+      //deprecated since it was a universal name with a risk of sharing wrong config to other PCBs
+    }
+    else{
+      json j;
+      parseJsonToSectionRateConfig( j, sectionRateConfig );
+    }
   }
 }
 
 void saveConfig() {
   {
     const auto j = parseSectionRateConfigToJson( sectionRateConfig );
-    saveJsonToFile( j, "/config.json" );
+    saveJsonToFile( j, "/sectionRate.json" );
   }
 }
 

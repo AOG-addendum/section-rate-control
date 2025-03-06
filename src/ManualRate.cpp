@@ -28,9 +28,8 @@ void manualRate100Hz ( void* z ) {
         str += "\nIncrease flow, ";
         str += ( uint8_t ) manualPWM;
         str += " PWM";
-        labelRateValveHandle->value = str;
         labelRateValveHandle->color = ControlColor::Emerald;
-        ESPUI.updateControlAsync( labelRateValveHandle );
+        ESPUI.updateLabel( labelRateValve, str );
       }
     }
     else if( digitalRead( sectionRateConfig.gpioRateDown ) == LOW ){
@@ -52,9 +51,8 @@ void manualRate100Hz ( void* z ) {
         str += "\nDecrease flow, ";
         str += ( uint8_t ) manualPWM;
         str += " PWM";
-        labelRateValveHandle->value = str;
         labelRateValveHandle->color = ControlColor::Emerald;
-        ESPUI.updateControlAsync( labelRateValveHandle );
+        ESPUI.updateLabel( labelRateValve, str );
       }
     }
     else{
@@ -69,9 +67,8 @@ void manualRate100Hz ( void* z ) {
         str = AOGrateControl ? "Automatic (AOG)" : "Manual";
         str += " control";
         str += "\nMaintaining flow";
-        labelRateValveHandle->value = str;
         labelRateValveHandle->color = ControlColor::Emerald;
-        ESPUI.updateControlAsync( labelRateValveHandle );
+        ESPUI.updateLabel( labelRateValve, str );
       }
     }
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );

@@ -32,7 +32,7 @@ void diagnosticWorker10Hz( void* z ) {
       }
       labelSectionsStatusHandle->value = str;
       labelSectionsStatusHandle->color = ControlColor::Emerald;
-      ESPUI.updateControlAsync( labelSectionsStatusHandle );
+      ESPUI.updateControl( labelSectionsStatusHandle );
     }
     {
       Control* labelRateMeterStatusHandle = ESPUI.getControl( labelRateMeter );
@@ -53,7 +53,7 @@ void diagnosticWorker10Hz( void* z ) {
       }
       labelRateMeterStatusHandle->value = str;
       labelRateMeterStatusHandle->color = ControlColor::Emerald;
-      ESPUI.updateControlAsync( labelRateMeterStatusHandle );
+      ESPUI.updateControl( labelRateMeterStatusHandle );
     }
     {
       Control* labelRateValveHandle = ESPUI.getControl( labelRateValve );
@@ -100,7 +100,7 @@ void diagnosticWorker10Hz( void* z ) {
       }
       labelRateValveHandle->value = str;
       labelRateValveHandle->color = ControlColor::Emerald;
-      ESPUI.updateControlAsync( labelRateValveHandle );
+      ESPUI.updateControl( labelRateValveHandle );
     }
     vTaskDelayUntil( &xLastWakeTime, xFrequency );
   }

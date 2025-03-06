@@ -16,7 +16,7 @@ uint16_t buttonReset;
 
 void setResetButtonToRed() {
   ESPUI.getControl( buttonReset )->color = ControlColor::Alizarin;
-  ESPUI.updateControlAsync( buttonReset );
+  ESPUI.updateControl( buttonReset );
 }
 
 void initESPUI ( void ) {

@@ -219,6 +219,8 @@ class TCritSect {
 extern void setResetButtonToRed();
 
 extern void initESPUI();
+extern void initDOGL_Display( void* z );
+extern void runDOGL_DisplayTask();
 extern void initIdleStats();
 extern void initDiagnostics();
 extern void initWiFi();

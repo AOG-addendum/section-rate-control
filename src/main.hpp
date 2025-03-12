@@ -75,7 +75,7 @@ struct SensorConfig	{
 	float RateError = 0;		// rate error X 1000
 	float UPM = 0;				// upm X 1000
 	int16_t pwmSetting = 0;
-	uint32_t CommTime = 0;
+	time_t RateCommTime = 0;
 	byte InCommand = 0;			// command byte from RateController
 	byte ControlType = 0;		// 0 standard, 1 combo close, 2 motor, 3 motor/weight
 	uint32_t TotalPulses = 0;

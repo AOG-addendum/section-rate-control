@@ -75,6 +75,7 @@ void diagnosticWorker10Hz( void* z ) {
         }
         str += "Updated ";
         unsigned long time = millis() - Sensor.CommTime;
+        unsigned long time = millis() - Sensor.RateCommTime;
         if( time > 1000 ){
             str += ( String )( time / 1000 );
             str += " seconds ago";

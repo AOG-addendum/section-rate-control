@@ -18,7 +18,7 @@ void rateController20Hz ( void* z ) {
 
   for( ;; ) {
 
-		Sensor.FlowEnabled = (millis() - Sensor.CommTime < 4000) && Sensor.RateSetting > 0 && Sensor.MasterOn;
+		Sensor.FlowEnabled = (millis() - Sensor.RateCommTime < 4000) && Sensor.RateSetting > 0 && Sensor.MasterOn;
 
 		GetUPM();
 		AdjustFlow();

@@ -68,9 +68,8 @@ void SendData(){
 	// bit 3	- wifi rssi < -70
 	// bit 4	- wifi rssi < -65
 	DataOut[11] = 0;
-	if (millis()-Sensor.CommTime < 4000) DataOut[11] |= 0b00000001;
-	if (millis()-Sensor.CommTime < 4000) DataOut[11] |= 0b00000010;
 	DataOut[12] = CRC(DataOut, PGN32613Length - 1, 0);
+	if (millis()-Sensor.RateCommTime < 4000) DataOut[11] |= 0b00000001;
 	udpSendFrom.writeTo( DataOut, 13, ipDestination, sectionRateConfig.rcPortSendTo );
 
 	//PGN 32621, pressures to RC

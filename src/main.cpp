@@ -153,7 +153,7 @@ void setup( void ) {
   initESPUI();
 
   if( sectionRateConfig.enableOTA ) {
-    AsyncElegantOTA.begin( ESPUI.server );
+    AsyncElegantOTA.begin( ESPUI.WebServer() );
   }
 
   if ( udpSendFrom.listen( sectionRateConfig.rcPortSendFrom ))

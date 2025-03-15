@@ -118,6 +118,7 @@ json parseSectionRateConfigToJson( const SectionRateConfig& config ) {
 
   j["settings"]["invertRateMotor"] = config.invertRateMotor;
   j["settings"]["rateControlAlwaysManual"] = config.rateControlAlwaysManual;
+  j["settings"]["pcbVersion"] = config.pcbVersion;
 
   return j;
 }
@@ -152,6 +153,7 @@ void parseJsonToSectionRateConfig( json& j, SectionRateConfig& config ) {
 
       config.invertRateMotor = j.value( "/settings/invertRateMotor"_json_pointer, sectionRateConfigDefaults.invertRateMotor );
       config.rateControlAlwaysManual = j.value( "/settings/rateControlAlwaysManual"_json_pointer, sectionRateConfigDefaults.rateControlAlwaysManual );
+      config.pcbVersion = j.value( "/settings/pcbVersion"_json_pointer, sectionRateConfigDefaults.pcbVersion );
 
     } catch( json::exception& e ) {
       // output exception information

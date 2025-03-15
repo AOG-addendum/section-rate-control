@@ -84,6 +84,26 @@ void setup( void ) {
   loadSavedConfig();
   loadPIDConfig();
 
+  if( sectionRateConfig.pcbVersion == 0 ){ // Rev C
+    Sensor.FlowPin = 39;
+    Sensor.FwdPin = 17;
+    Sensor.RevPin = 16;
+    Sensor.PWMPin = 15;
+    sectionRateConfig.gpioManualAutoSelection = 36;
+  } else if( sectionRateConfig.pcbVersion == 1 ){ // Rev D
+    Sensor.FlowPin = 36;
+    Sensor.FwdPin = 27;
+    Sensor.RevPin = 26;
+    Sensor.PWMPin = 25;
+    sectionRateConfig.gpioManualAutoSelection = 39;
+  } else if( sectionRateConfig.pcbVersion == 2 ){ // Rev E
+    Sensor.FlowPin = 34;
+    Sensor.FwdPin = 27;
+    Sensor.RevPin = 26;
+    Sensor.PWMPin = 25;
+    sectionRateConfig.gpioManualAutoSelection = 39;
+  }
+
 	Wire.begin();
 
   pinMode(Sensor.RevPin, OUTPUT);

@@ -68,7 +68,7 @@ extern ModuleConfig MDL;
 
 struct SensorConfig	{
 	uint8_t FlowPin = 36;
-	uint8_t FwdPin = 27;
+	uint8_t	FwdPin = 27;
 	uint8_t	RevPin = 26;
 	uint8_t	PWMPin = 25;
   uint8_t	DirPin = 35; 
@@ -163,6 +163,7 @@ struct SectionRateConfig {
   char hostname[24] = "Section Control";
 
 	uint8_t gpioManualAutoSelection = 39;
+	uint8_t pcbVersion = 0;
 	uint8_t gpioRateUp = 33;
 	uint8_t gpioRateDown = 32;
 

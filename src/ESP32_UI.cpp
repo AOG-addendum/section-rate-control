@@ -123,6 +123,16 @@ void initESPUI ( void ) {
         sectionRateConfig.rateControlAlwaysManual = control->value.toInt() == 1;
       } );
     }
+    {
+      uint16_t sel = ESPUI.addControl( ControlType::Select, "PCB version*", String( ( int )sectionRateConfig.pcbVersion ), ControlColor::Wetasphalt, tab,
+      []( Control * control, int id ) {
+        sectionRateConfig.pcbVersion = control->value.toInt();
+        setResetButtonToRed();
+      } );
+      ESPUI.addControl( ControlType::Option, "Rev C", "0", ControlColor::Alizarin, sel );
+      ESPUI.addControl( ControlType::Option, "Rev D", "1", ControlColor::Alizarin, sel );
+      ESPUI.addControl( ControlType::Option, "Rev E", "2", ControlColor::Alizarin, sel );
+    }
   }
 
   char autosteerDownloadHTML [100];

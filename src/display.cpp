@@ -222,14 +222,12 @@ void initDOGL_Display( void* z ){
   DOG.initialize( 2, 23, 18, 5, 4, DOGL128 ); //SS,SI,SCK,A0,RESET,EA DOGL128-6 (=128x64 dots)
   DOG.view( VIEW_TOP );
   DOG.picture( 32, 0, Image_AOG_bmp );
-  vTaskDelay( 1500 / portTICK_PERIOD_MS );
+  vTaskDelay( 2000 / portTICK_PERIOD_MS );
   if( AOGsectionControl == true ){
     DOG.string( 20, 4, font_8x16, "AOG control" );
   } else {
     DOG.string( 40, 4, font_8x16, "Manual" );
   }
-  vTaskDelay( 1000 / portTICK_PERIOD_MS );
-  DOG.picture( 32, 0, Image_AOG_bmp );
   vTaskDelete( NULL );
 
 }
@@ -244,9 +242,8 @@ void runDOGL_DisplayTask( void ){
     }
     DISPLAY_INDEX[i] = index;
   }
-  DOG.clear();
 
-  xTaskCreate( displayAutoWorker10Hz, "displayAutoWorker", 3096, NULL, 3, NULL );
   updateDisplay();
+  xTaskCreate( displayAutoWorker10Hz, "displayAutoWorker", 3096, NULL, 3, NULL );
 
 }

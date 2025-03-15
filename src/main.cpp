@@ -71,7 +71,7 @@ AnalogConfig AINs;
 void setup( void ) {
 
   xTaskCreate( initDOGL_Display, "initDOGL_Display", 3096, NULL, 3, NULL );
-  
+
   Serial.begin( 115200 );
 
   WiFi.disconnect( true );

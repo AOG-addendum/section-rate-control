@@ -104,6 +104,24 @@ void setup( void ) {
     sectionRateConfig.gpioManualAutoSelection = 39;
   }
 
+  pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );
+  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == LOW ){
+    Serial.println("Automatic section control");
+    AOGsectionControl = true;
+    if( sectionRateConfig.rateControlAlwaysManual == true ){
+      Serial.println("Manual rate control");
+      AOGrateControl = false;
+    } else {
+      Serial.println("Automatic rate control");
+      AOGrateControl = true;
+    }
+  } else {
+    Serial.println("Manual section control");
+    Serial.println("Manual rate control");
+    AOGsectionControl = false;
+    AOGrateControl = false;
+  }
+
 	Wire.begin();
 
   pinMode(Sensor.RevPin, OUTPUT);
@@ -155,25 +173,15 @@ void setup( void ) {
   pinMode( sectionRateConfig.gpioRateUp, INPUT );
   pinMode( sectionRateConfig.gpioRateDown, INPUT );
   pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );
-  if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == LOW ){
-    Serial.println("Automatic section control");
-    AOGsectionControl = true;
+  if( AOGsectionControl == true ){
     initAutoSectionUDP();
-    if( sectionRateConfig.rateControlAlwaysManual == true ){
-      Serial.println("Manual rate control");
-      AOGrateControl = false;
+    if( AOGrateControl == false ){
       initManualRate();
     } else {
-      Serial.println("Automatic rate control");
-      AOGrateControl = true;
       initAutoRateController();
       initAutoRateControlUDP();
     }
   } else {
-    Serial.println("Manual section control");
-    Serial.println("Manual rate control");
-    AOGsectionControl = false;
-    AOGrateControl = false;
     Wire.beginTransmission( 0x20 );
     Wire.write( 0x12 ); // address port A
     Wire.write( 0 );  // all sections pulled down

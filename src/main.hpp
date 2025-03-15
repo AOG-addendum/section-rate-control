@@ -21,6 +21,7 @@ extern uint16_t labelRCAppUdpData;
 extern uint16_t labelSectionStatus;
 extern uint16_t labelRateValve;
 extern uint16_t labelRateMeter;
+extern uint16_t labelRateSettings;
 extern uint16_t labelPIDSettings;
 extern uint16_t labelBuildDate;
 

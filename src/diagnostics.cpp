@@ -130,6 +130,31 @@ void diagnosticWorker10Hz( void* z ) {
       labelPIDStatusHandle->color = ControlColor::Emerald;
       ESPUI.updateControl( labelPIDStatusHandle );
     }
+    {
+      Control* labelRateMeterStatusHandle = ESPUI.getControl( labelRateSettings );
+      String str;
+      str.reserve( 30 );
+      str = "Target UPM: ";
+      str += ( String )( Sensor.TargetUPM );
+      str += "\nMeter calibration: ";
+      str += ( String )( Sensor.MeterCal );
+      str += "\nMaster on: ";
+      str += ( bool ) Sensor.MasterOn ? "Yes" : "No" ;
+      str += "\nAuto on: ";
+      str += ( bool ) Sensor.AutoOn ? "Yes" : "No" ;
+      str += "\n";
+      unsigned long time = millis() - Sensor.RateCommTime;
+      if( time > 1000 ){
+        str += ( String )( time / 1000 );
+        str += " seconds ago";
+      } else {
+        str += ( String )( time );
+        str += " milliseconds ago";
+      }
+      labelRateMeterStatusHandle->value = str;
+      labelRateMeterStatusHandle->color = ControlColor::Emerald;
+      ESPUI.updateControl( labelRateMeterStatusHandle );
+    }
     vTaskDelayUntil( &xLastWakeTime, xFrequency );
   }
 }

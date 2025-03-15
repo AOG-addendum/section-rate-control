@@ -103,6 +103,33 @@ void diagnosticWorker10Hz( void* z ) {
       labelRateValveHandle->color = ControlColor::Emerald;
       ESPUI.updateControl( labelRateValveHandle );
     }
+    {
+      Control* labelPIDStatusHandle = ESPUI.getControl( labelPIDSettings );
+      String str;
+      str.reserve( 30 );
+      str = "kP: ";
+      str += ( String )pidConfig.KP;
+      str += "\nkI: ";
+      str += ( String )pidConfig.KI;
+      str += "\nkD: ";
+      str += ( String )pidConfig.KD;
+      str += "\nMin PWM: ";
+      str += ( String )pidConfig.MinPWM;
+      str += "\nMax PWM: ";
+      str += ( String )pidConfig.MaxPWM;
+      str += "\n";
+      unsigned long time = millis() - Sensor.PIDCommTime;
+      if( time > 1000 ){
+        str += ( String )( time / 1000 );
+        str += " seconds ago";
+      } else {
+        str += ( String )( time );
+        str += " milliseconds ago";
+      }
+      labelPIDStatusHandle->value = str;
+      labelPIDStatusHandle->color = ControlColor::Emerald;
+      ESPUI.updateControl( labelPIDStatusHandle );
+    }
     vTaskDelayUntil( &xLastWakeTime, xFrequency );
   }
 }

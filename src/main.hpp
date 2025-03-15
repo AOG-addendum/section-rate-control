@@ -21,6 +21,7 @@ extern uint16_t labelRCAppUdpData;
 extern uint16_t labelSectionStatus;
 extern uint16_t labelRateValve;
 extern uint16_t labelRateMeter;
+extern uint16_t labelPIDSettings;
 extern uint16_t labelBuildDate;
 
 extern byte Temp;
@@ -76,6 +77,7 @@ struct SensorConfig	{
 	float UPM = 0;				// upm X 1000
 	int16_t pwmSetting = 0;
 	time_t RateCommTime = 0;
+	time_t PIDCommTime = 0;
 	byte InCommand = 0;			// command byte from RateController
 	byte ControlType = 0;		// 0 standard, 1 combo close, 2 motor, 3 motor/weight
 	uint32_t TotalPulses = 0;

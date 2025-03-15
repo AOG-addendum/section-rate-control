@@ -9,47 +9,42 @@ AsyncUDP udpRemotePort;
 
 byte DataOut[50];
 
-const byte PGN32500Length = 31;
-const byte PGN32501Length = 8;
-const byte PGN32502Length = 7;
-const byte PGN32503Length = 6;
-const byte PGN32613Length = 13;
-const byte PGN32614Length = 16;
-const byte PGN32616Length = 12;
-const byte PGN32619Length = 6;
-const byte PGN32621Length = 12;
-
 uint32_t TestWeight = 430000;
+uint8_t PGNlength;
 
 uint8_t sectionsOn = 0;
 unsigned long sectionsUpdateMillis;
 
 void SendData(){
 
-	//PGN32613 to Rate Controller from Arduino
-	//0	HeaderLo		101
-	//1	HeaderHi		127
-	//2 Mod/Sen ID      0-15/0-15
-	//3	rate applied Lo 	10 X actual
-	//4 rate applied Mid
-	//5	rate applied Hi
-	//6	acc.Quantity Lo		10 X actual
-	//7	acc.Quantity Mid
-	//8	acc.Quantity Hi
-	//9 PWM Lo
-	//10 PWM Hi
-	//11 Status
-	//12 crc
-	DataOut[0] = 101;
-	DataOut[1] = 127;
+	//PGN32400, Rate info from module to RC
+	//0     HeaderLo    144
+	//1     HeaderHi    126
+	//2     Mod/Sen ID          0-15/0-15
+	//3	    rate applied Lo 	1000 X actual
+	//4     rate applied Mid
+	//5	    rate applied Hi
+	//6	    acc.Quantity Lo		10 X actual
+	//7	    acc.Quantity Mid
+	//8     acc.Quantity Hi
+	//9     PWM Lo
+	//10    PWM Hi
+	//11    Status
+	//      bit 0   sensor connected
+	//12    CRC
+	DataOut[0] = 144;
+	DataOut[1] = 126;
 	DataOut[2] = BuildModSenID(MDL.ID, 0);
-	// rate applied, 10 X actual
-	DataOut[3] = Sensor.UPM * 10;
-	DataOut[4] = (int)(Sensor.UPM * 10) >> 8;
-	DataOut[5] = (int)(Sensor.UPM * 10) >> 16;
+
+	// rate applied, 1000 X actual
+	uint32_t Applied = Sensor.UPM * 1000;
+	DataOut[3] = Applied;
+	DataOut[4] = Applied >> 8;
+	DataOut[5] = Applied >> 16;
+
 	// accumulated quantity, 10 X actual
 	if( Sensor.MeterCal > 0 ){
-		long Units = Sensor.TotalPulses * 10.0 / Sensor.MeterCal;
+		long Units = ( Sensor.TotalPulses * 10.0 ) / Sensor.MeterCal;
 		DataOut[6] = Units;
 		DataOut[7] = Units >> 8;
 		DataOut[8] = Units >> 16;
@@ -59,8 +54,8 @@ void SendData(){
 		DataOut[7] = 0;
 		DataOut[8] = 0;
 	}
-	DataOut[9] = Sensor.pwmSetting * 10;
-	DataOut[10] = (Sensor.pwmSetting * 10) >> 8;
+	DataOut[9] = Sensor.pwmSetting;
+	DataOut[10] = Sensor.pwmSetting >> 8;
 	// status
 	// bit 0    - sensor 0 receiving rate controller data
 	// bit 1    - sensor 1 receiving rate controller data
@@ -68,36 +63,9 @@ void SendData(){
 	// bit 3	- wifi rssi < -70
 	// bit 4	- wifi rssi < -65
 	DataOut[11] = 0;
-	DataOut[12] = CRC(DataOut, PGN32613Length - 1, 0);
 	if (millis()-Sensor.RateCommTime < 4000) DataOut[11] |= 0b00000001;
+	DataOut[12] = CRC(DataOut, 12, 0);
 	udpSendFrom.writeTo( DataOut, 13, ipDestination, sectionRateConfig.rcPortSendTo );
-
-	//PGN 32621, pressures to RC
-	//0    109
-	//1    127
-	//2    module ID
-	//3    sensor 0, Lo
-	//4    sensor 0, Hi
-	//5    sensor 1, Lo
-	//6    sensor 1, Hi
-	//7    sensor 2, Lo
-	//8    sensor 2, Hi
-	//9    sensor 3, Lo
-	//10   sensor 3, Hi
-	//11   CRC
-	DataOut[0] = 109;
-	DataOut[1] = 127;
-	DataOut[2] = MDL.ID;
-	DataOut[3] = (byte)AINs.AIN0;
-	DataOut[4] = (byte)(AINs.AIN0 >> 8);
-	DataOut[5] = (byte)AINs.AIN1;
-	DataOut[6] = (byte)(AINs.AIN1 >> 8);
-	DataOut[7] = (byte)AINs.AIN2;
-	DataOut[8] = (byte)(AINs.AIN2 >> 8);
-	DataOut[9] = (byte)AINs.AIN3;
-	DataOut[10] = (byte)(AINs.AIN3 >> 8);
-	DataOut[11] = CRC(DataOut, PGN32621Length - 1, 0);
-	udpSendFrom.writeTo( DataOut, 12, ipDestination, sectionRateConfig.rcPortSendTo );
 
 	sendSwitchData();
 
@@ -111,118 +79,101 @@ void initAutoRateControlUDP(){
 			uint8_t len = packet.length();
 			switch (PGN){
 
-				case 32614:
-					//PGN32614 to Arduino from Rate Controller, 16 bytes
-					//0	HeaderLo		102
-					//1	HeaderHi		127
-					//2 Controller ID
-					//3	relay Lo		0 - 7
-					//4	relay Hi		8 - 15
-					//5	rate set Lo		10 X actual
-					//6 rate set Mid
-					//7	rate set Hi		10 X actual
-					//8	Flow Cal Lo		1000 X actual
-					//9	Flow Cal Mid
-					//10 Flow Cal Hi
-					//11	Command
-					//- bit 0		    reset acc.Quantity
-					//- bit 1, 2		valve type 0 - 3
-					//- bit 3		    MasterOn
-					//- bit 4           0 - average time for multiple pulses, 1 - time for one pulse
-					//- bit 5           AutoOn
-					//- bit 6           Debug pgn on
-					//- bit 7           Calibration on
-					//12    power relay Lo      list of power type relays 0-7
-					//13    power relay Hi      list of power type relays 8-15
-					//14    Cal PWM     calibration pwm
-					//15    crc
-					if (len > PGN32614Length - 1){
-						if (GoodCRC(Data, PGN32614Length)){
+				case 32500:
+					//PGN32500, Rate settings from RC to module
+					//0	    HeaderLo		    244
+					//1	    HeaderHi		    126
+					//2     Mod/Sen ID          0-15/0-15
+					//3	    rate set Lo		    1000 X actual
+					//4     rate set Mid
+					//5	    rate set Hi
+					//6	    Flow Cal Lo	        1000 X actual
+					//7     Flow Cal Mid
+					//8     Flow Cal Hi
+					//9	    Command
+					//	        - bit 0		    reset acc.Quantity
+					//	        - bit 1,2,3		control type 0-4
+					//	        - bit 4		    MasterOn
+					//          - bit 5         -
+					//          - bit 6         AutoOn
+					//          - bit 7         -
+					//10    manual pwm Lo
+					//11    manual pwm Hi
+					//12    -
+					//13    CRC
+
+					PGNlength = 14;
+					if (len > PGNlength - 1){
+						if (GoodCRC(Data, PGNlength)){
 							byte tmp = Data[2];
 							if (ParseModID(tmp) == MDL.ID){
 								byte ID = ParseSenID(tmp);  // sensor ID
 								if (ID == MDL.ID){
-									RelayLo = Data[3];
-									RelayHi = Data[4];
+
+									// rate setting, 1000 times actual
+									uint32_t RateSet = Data[3] | (uint32_t)Data[4] << 8 | (uint32_t)Data[5] << 16;
+									Sensor.TargetUPM = (float)(RateSet * 0.001);
+
+									// Meter Cal, 1000 times actual
+									uint32_t Temp = Data[6] | (uint32_t)Data[7] << 8 | (uint32_t)Data[8] << 16;
+									Sensor.MeterCal = Temp * 0.001;
 
 									// command byte
-									Sensor.InCommand = Data[11];
+									Sensor.InCommand = Data[9];
 									if ((Sensor.InCommand & 1) == 1) Sensor.TotalPulses = 0; // reset accumulated count
 
 									Sensor.ControlType = 0;
 									if ((Sensor.InCommand & 2) == 2) Sensor.ControlType += 1;
 									if ((Sensor.InCommand & 4) == 4) Sensor.ControlType += 2;
+									if ((Sensor.InCommand & 8) == 8) Sensor.ControlType += 4;
 
-									Sensor.MasterOn = ((Sensor.InCommand & 8) == 8);
-									Sensor.UseMultiPulses = ((Sensor.InCommand & 16) == 16);
-									AutoOn = ((Sensor.InCommand & 32) == 32);
-									Sensor.CalOn = ((Sensor.InCommand & 128) == 128);
+									Sensor.MasterOn = ((Sensor.InCommand & 16) == 16);
 
-									// rate setting, 10 times actual
-									int RateSet = Data[5] | Data[6] << 8 | Data[7] << 16;
-									if (AutoOn){
-										Sensor.RateSetting = (float)RateSet * 0.1;
-									}
-									else{
-										Sensor.ManualAdjust = (float)RateSet * 0.1;
-									}
+									Sensor.AutoOn = ((Sensor.InCommand & 64) == 64);
 
-									// Meter Cal, 1000 X actual
-									uint32_t Temp = Data[8] | Data[9] << 8 | Data[10] << 16;
-									Sensor.MeterCal = (float)Temp * 0.001;
+									int16_t tmp = Data[10] | Data[11] << 8;
+                  					Sensor.ManualAdjust = tmp;
 
-									// power relays
-									PowerRelayLo = Data[12];
-									PowerRelayHi = Data[13];
-
-									// cal
-									Sensor.CalPWM = Data[14];
-
-									Sensor.CommTime = millis();
+									Sensor.RateCommTime = millis();
 								}
 							}
 						}
 					}
 					break;
 
-				case 32616:
-					// PID to Arduino from RateController, 12 bytes
-
-					if (len > PGN32616Length - 1){
-						if (GoodCRC(Data, PGN32616Length)){
+				case 32502:
+					// PGN32502, PID from RC to module
+					// 0    246
+					// 1    126
+					// 2    Mod/Sen ID     0-15/0-15
+					// 3    KP
+					// 4    KI
+					// 5    KD
+					// 6    MinPWM
+					// 7    MaxPWM
+					// 8    PID scaling
+					// 9    CRC
+        			PGNlength = 10;
+					if (len > PGNlength - 1){
+						if (GoodCRC(Data, PGNlength)){
 							byte tmp = Data[2];
 							if (ParseModID(tmp) == MDL.ID){
 								byte ID = ParseSenID(tmp);
 								if (ID == MDL.ID){
-									pidConfig.KP = Data[3];
-									pidConfig.MinPWM = Data[4];
-									pidConfig.LowMax = Data[5];
-									pidConfig.HighMax = Data[6];
-									pidConfig.Deadband = Data[7];
-									pidConfig.BrakePoint = Data[8];
-									pidConfig.AdjustTime = Data[9];
-									pidConfig.KI = Data[10];
+                  					double PIDscale = pow(10, Data[8] * -1);
+
+									pidConfig.KP = (double)(Data[3] * PIDscale);
+									pidConfig.KI = (double)(Data[4] * PIDscale);
+									pidConfig.KD = (double)(Data[5] * PIDscale);
+									pidConfig.MinPWM = (double)(Data[6] * PIDscale);
+									pidConfig.MaxPWM = (double)(Data[7] * PIDscale);
+									Sensor.PIDCommTime = millis();
 								}
-								savePIDConfig();
+								//savePIDConfig();
 							}
 						}
 					}
 					break;
-
-				case 32619:
-					// from Wemos D1 mini, 6 bytes
-					// section buttons
-
-					if (len > PGN32619Length - 1){
-						if (GoodCRC(Data, PGN32619Length)){
-							for (int i = 2; i < 6; i++){
-								WifiSwitches[i] = Data[i];
-							}
-							WifiSwitchesEnabled = true;
-							WifiSwitchesTimer = millis();
-						}
-					}
-				break;
 				}
 		});
 	}

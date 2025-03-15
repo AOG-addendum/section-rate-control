@@ -3,11 +3,20 @@
 #include "main.hpp"
 
 bool previousState;
-volatile unsigned long Duration;
+const int SampleSize = 24;
+uint32_t Samples[SampleSize];
+const uint32_t PulseMin = 250;
+volatile uint32_t PulseMax = 50000;
 volatile unsigned long PulseCount;
+volatile unsigned long Duration;
+volatile unsigned long PulseLast;
 volatile unsigned long PulseTime;
 volatile unsigned long totalPulseCount;
+volatile int SamplesCount;
+volatile uint32_t SamplesTotal;
+volatile uint16_t SamplesIndex;
 uint32_t LastPulse;
+double PulseAvg;
 
 unsigned long TimedCounts;
 uint32_t RateInterval;
@@ -15,18 +24,10 @@ uint32_t RateTimeLast;
 uint32_t PWMTimeLast;
 
 unsigned long CurrentCount;
+uint32_t CurrentTotal;
 uint32_t CurrentDuration;
 
-unsigned long PPM;		// pulse per minute * 100
-unsigned long Osum;
-unsigned long Omax;
-unsigned long Omin;
-byte Ocount;
-float Oave;
-unsigned long Omax2;
-unsigned long Omin2;
-
-void GetUPM(){
+void GetUPM_Old(){
 	if (Sensor.ControlType == 3){
 		// use weight
 		Sensor.UPM = Sensor.MeterCal * (double)Sensor.pwmSetting;
@@ -37,75 +38,31 @@ void GetUPM(){
 	}
 }
 
-void GetUPMflow(){
-	if (PulseCount){
+void GetUPM(){
+	if (PulseCount && Sensor.MeterCal > 0){
+		LastPulse = millis();
+
 		noInterrupts();
-		CurrentCount = PulseCount;
+		Sensor.TotalPulses += PulseCount;
 		PulseCount = 0;
-		CurrentDuration = Duration;
+		if (SamplesCount > SampleSize) SamplesCount = SampleSize;
+		CurrentCount = SamplesCount;
+		CurrentTotal = SamplesTotal;
 		interrupts();
 
-		if (Sensor.UseMultiPulses){
-			// low ms/pulse, use pulses over time
-			TimedCounts += CurrentCount;
-			RateInterval = millis() - RateTimeLast;
-			if (RateInterval > 500){
-				RateTimeLast = millis();
-				PPM = (6000000 * TimedCounts) / RateInterval;	// 100 X actual
-				TimedCounts = 0;
-			}
-		}
-		else{
-			// high ms/pulse, use time for one pulse
-			if (CurrentDuration == 0){
-				PPM = 0;
-			}
-			else{
-				PPM = 6000000 / CurrentDuration;	// 100 X actual
-			}
-		}
-
-		LastPulse = millis();
-		Sensor.TotalPulses += CurrentCount;
+		PulseAvg = ((double)CurrentTotal / CurrentCount) * 0.8 + PulseAvg * 0.2;
+		Sensor.UPM = (double)(60000000.0 / PulseAvg) / Sensor.MeterCal;
+		PulseMax = PulseAvg * 1.5;
 	}
 
-	if (millis() - LastPulse > 4000)	PPM = 0;	// check for no flow
-
-	// double olympic average
-	Osum += PPM;
-	if (Omax < PPM){
-		Omax2 = Omax;
-		Omax = PPM;
-	}
-	else if (Omax2 < PPM) Omax2 = PPM;
-
-	if (Omin > PPM){
-		Omin2 = Omin;
-		Omin = PPM;
-	}
-	else if (Omin2 > PPM) Omin2 = PPM;
-
-	Ocount++;
-	if (Ocount > 9){
-		Osum -= Omax;
-		Osum -= Omin;
-		Osum -= Omax2;
-		Osum -= Omin2;
-		Oave = (float)Osum / 600.0;	// divide by 6 samples and divide by 100 for decimal place
-		Osum = 0;
-		Omax = 0;
-		Omin = 5000000;
-		Omax2 = 0;
-		Omin2 = 5000000;
-		Ocount = 0;
-	}
-
-	// units per minute
-	if (Sensor.MeterCal > 0){
-		Sensor.UPM = Oave / Sensor.MeterCal;
-	}
-	else{
+	// check for no flow
+	if (millis() - LastPulse > 4000){
 		Sensor.UPM = 0;
+		PulseMax = 500000;
+		SamplesCount = 0;
+		SamplesIndex = 0;
+		SamplesTotal = 0;
+		memset(Samples, 0, sizeof(Samples));
 	}
 }
 
@@ -114,10 +71,19 @@ void IRAM_ATTR ISR0(){
 	if( previousState != state ){
 		previousState = state;
 		if( state == HIGH ){
-			Duration = millis() - PulseTime;
-			PulseTime = millis();
-			PulseCount++;
-			totalPulseCount++;
+			PulseTime = micros();
+			Duration = PulseTime - PulseLast;
+			if ( Duration > PulseMin ){
+				PulseLast = PulseTime;
+				if ( Duration < PulseMax ){
+					PulseCount++;
+					SamplesTotal -= Samples[SamplesIndex];
+					Samples[SamplesIndex] = Duration;
+					SamplesTotal += Samples[SamplesIndex];
+					SamplesIndex = (SamplesIndex + 1) % SampleSize;
+					SamplesCount++;
+				}
+			}
 		}
 	}
 }

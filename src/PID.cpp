@@ -8,51 +8,35 @@ float Integral;
 
 int DoPID() {
     int Result = 0;
-    if (!PauseAdjust || pidConfig.AdjustTime == 0) { // AdjustTime==0 disables timed adjustment
-        // adjusting rate
-        if (Sensor.FlowEnabled){
-            float ErrorPercent = abs(Sensor.RateError / Sensor.RateSetting);
-            float ErrorBrake = (float)((float)(pidConfig.BrakePoint / 100.0));
-            float Max = (float)pidConfig.HighMax;
+    // adjusting rate
+    if (Sensor.FlowEnabled){
+        float ErrorPercent = abs(Sensor.RateError / Sensor.TargetUPM);
+        float ErrorBrake = (float)((float)(pidConfig.BrakePoint / 100.0));
+        float Max = (float)pidConfig.HighMax;
 
-            if (ErrorPercent > ((float)(pidConfig.Deadband / 100.0))){
-                if (ErrorPercent <= ErrorBrake) Max = pidConfig.LowMax;
+        if (ErrorPercent > ((float)(pidConfig.Deadband / 100.0))){
+            if (ErrorPercent <= ErrorBrake) Max = pidConfig.LowMax;
 
-                Result = (int)((pidConfig.KP * Sensor.RateError) + (Integral * pidConfig.KI / 255.0));
-                bool IsPositive = (Result > 0);
-                Result = abs(Result);
+            Result = (int)((pidConfig.KP * Sensor.RateError) + (Integral * pidConfig.KI / 255.0));
+            bool IsPositive = (Result > 0);
+            Result = abs(Result);
 
-                if (Result != 0)
-                {
-                    // limit integral size
-                    if ((Integral / Result) < 4) Integral += Sensor.RateError / 3.0;
-                }
-
-                if (Result > Max) Result = (int)Max;
-                else if (Result < pidConfig.MinPWM) Result = (int)pidConfig.MinPWM;
-
-                if (!IsPositive) Result = -Result;
+            if (Result != 0)
+            {
+                // limit integral size
+                if ((Integral / Result) < 4) Integral += Sensor.RateError / 3.0;
             }
-            else{
-                // reset time since no adjustment was made
-                CurrentAdjustTime = millis();
 
-                Integral = 0;
-            }
-        }
+            if (Result > Max) Result = (int)Max;
+            else if (Result < pidConfig.MinPWM) Result = (int)pidConfig.MinPWM;
 
-        if ((millis() - CurrentAdjustTime) > pidConfig.AdjustTime){
-            // switch state
-            CurrentAdjustTime = millis();
-            PauseAdjust = true;
+            if (!IsPositive) Result = -Result;
         }
-    }
-    else {
-        // pausing adjustment, 3 X AdjustTime
-        if ((millis() - CurrentAdjustTime) > pidConfig.AdjustTime * 3) {
-            // switch state
+        else{
+            // reset time since no adjustment was made
             CurrentAdjustTime = millis();
-            PauseAdjust = false;
+
+            Integral = 0;
         }
     }
     return Result;
@@ -64,9 +48,9 @@ int ControlMotor() {
     float Result = 0;
     float ErrorPercent = 0;
 
-    if (Sensor.FlowEnabled && Sensor.RateSetting > 0) {
+    if (Sensor.FlowEnabled && Sensor.TargetUPM > 0) {
         Result = LastPWM;
-        ErrorPercent = abs(Sensor.RateError / Sensor.RateSetting) * 100.0;
+        ErrorPercent = abs(Sensor.RateError / Sensor.TargetUPM) * 100.0;
         if (ErrorPercent > (float)pidConfig.Deadband) {
             Result += ((float)pidConfig.KP / 255.0) * Sensor.RateError * 5.0;
 

@@ -38,12 +38,12 @@ void diagnosticWorker10Hz( void* z ) {
       Control* labelRateMeterStatusHandle = ESPUI.getControl( labelRateMeter );
       String str;
       str.reserve( 30 );
-      str = ( String )totalPulseCount;
+      str = ( String )Sensor.TotalPulses;
       str += " pulses, ";
       str += ( String )( Duration );
-      str += " milliseconds duration";
+      str += " microseconds duration";
       str += "\nUpdated ";
-      unsigned long time = millis() - PulseTime;
+      unsigned long time = millis() - ( PulseTime / 1000 );
       if( time > 1000 ){
         str += ( String )( time / 1000 );
         str += " seconds ago";
@@ -64,17 +64,33 @@ void diagnosticWorker10Hz( void* z ) {
         if( Sensor.pwmSetting > 0 ){
           str += "Increase flow, ";
           str += ( uint8_t ) Sensor.pwmSetting;
-          str += " PWM\n";
+          str += " PWM";
         }
         else if( Sensor.pwmSetting < 0 ){
           str += "Decrease flow, ";
           str += ( uint8_t ) Sensor.pwmSetting;
-          str += " PWM\n";
+          str += " PWM";
         } else {
-          str += "Maintaining flow\n";
+          str += "Maintaining flow";
         }
-        str += "Updated ";
-        unsigned long time = millis() - Sensor.CommTime;
+        str += "\nSensor UPM: ";
+        str += ( String ) Sensor.UPM;
+        str += "\nSensor type: ";
+        if (Sensor.ControlType == 0){
+          str += "standard";		// 0 standard, 1 combo close, 2 motor, 3 motor/weight
+        }
+        else if (Sensor.ControlType == 1){
+          str += "combo close";
+        }
+        else if (Sensor.ControlType == 2){
+          str += "motor";
+        }
+        else if (Sensor.ControlType == 3){
+          str += "motor/weight";
+        }
+        str += "\nFlow enabled: ";
+        str += ( bool )Sensor.FlowEnabled ? "Yes" : "No" ;
+        str += "\nUpdated ";
         unsigned long time = millis() - Sensor.RateCommTime;
         if( time > 1000 ){
             str += ( String )( time / 1000 );

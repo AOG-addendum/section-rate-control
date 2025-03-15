@@ -8,7 +8,6 @@
 
 uint8_t ErrorCount;
 bool IOexpanderFound;
-bool AutoOn;
 
 unsigned long UDPmillis;
 
@@ -18,12 +17,12 @@ void rateController20Hz ( void* z ) {
 
   for( ;; ) {
 
-		Sensor.FlowEnabled = (millis() - Sensor.RateCommTime < 4000) && Sensor.RateSetting > 0 && Sensor.MasterOn;
+		Sensor.FlowEnabled = (millis() - Sensor.RateCommTime < 4000) && Sensor.TargetUPM > 0 && Sensor.MasterOn;
 
 		GetUPM();
 		AdjustFlow();
 
-		if (AutoOn)
+		if ( Sensor.AutoOn )
 		{
 			AutoControl();
 		}
@@ -82,36 +81,28 @@ byte CRC(byte Chk[], byte Length, byte Start)
 
 void AutoControl()
 {
-	Sensor.RateError = Sensor.RateSetting - Sensor.UPM;
+	Sensor.RateError = Sensor.TargetUPM - Sensor.UPM;
 
-	if (Sensor.CalOn)
+	// normal mode
+	switch (Sensor.ControlType)
 	{
-		// calibration mode 
-		Sensor.pwmSetting = Sensor.CalPWM;
-	}
-	else
-	{
-		// normal mode
-		switch (Sensor.ControlType)
-		{
-		case 2:
-		case 3:
-			// motor control
-			Sensor.pwmSetting = ControlMotor();
-			break;
+	case 2:
+	case 3:
+		// motor control
+		Sensor.pwmSetting = ControlMotor();
+		break;
 
-		default:
-			// valve control
-			Sensor.pwmSetting = DoPID();
-			break;
-		}
+	default:
+		// valve control
+		Sensor.pwmSetting = DoPID();
+		break;
 	}
 	
 }
 
 void ManualControl()
 {
-	Sensor.RateError = Sensor.RateSetting - Sensor.UPM;
+	Sensor.RateError = Sensor.TargetUPM - Sensor.UPM;
 	if (Sensor.CalOn)
 	{
 		// calibration mode 
@@ -125,7 +116,7 @@ void ManualControl()
 			Sensor.ManualLast = millis();
 
 			// adjust rate
-			if (Sensor.RateSetting == 0) Sensor.RateSetting = 1; // to make FlowEnabled
+			if (Sensor.TargetUPM == 0) Sensor.TargetUPM = 1; // to make FlowEnabled
 
 			switch (Sensor.ControlType)
 			{

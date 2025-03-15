@@ -27,7 +27,6 @@ extern uint16_t labelBuildDate;
 
 extern byte Temp;
 extern unsigned int UnSignedTemp;
-extern bool AutoOn;
 extern bool AOGsectionControl;
 extern bool AOGrateControl;
 extern uint8_t sectionsOn;
@@ -37,7 +36,6 @@ extern unsigned long WifiSwitchesTimer;
 extern bool WifiSwitchesEnabled;
 extern byte WifiSwitches[6];
 
-extern unsigned long CommTime[2];
 extern byte ControlType[2];
 
 extern bool DebugOn;
@@ -73,6 +71,7 @@ struct SensorConfig	{
 	uint8_t	PWMPin = 25;
   uint8_t	DirPin = 35; 
 	bool MasterOn = false;
+	bool AutoOn = false;
 	bool FlowEnabled = false;
 	float RateError = 0;		// rate error X 1000
 	float UPM = 0;				// upm X 1000
@@ -82,11 +81,10 @@ struct SensorConfig	{
 	byte InCommand = 0;			// command byte from RateController
 	byte ControlType = 0;		// 0 standard, 1 combo close, 2 motor, 3 motor/weight
 	uint32_t TotalPulses = 0;
-	float RateSetting = 0;
+	float TargetUPM = 0;
 	float MeterCal = 10;
 	float ManualAdjust = 0;
 	uint16_t ManualLast = 0;
-	bool UseMultiPulses = 0;	// 0 - time for one pulse, 1 - average time for multiple pulses
 	bool CalOn = false;
 	byte CalPWM = 0;
 };
@@ -95,7 +93,9 @@ extern SensorConfig Sensor;
 struct PIDConfig {
 	byte KP = 20;
 	byte KI = 0;
+	byte KD = 0;
 	byte MinPWM = 50;
+	byte MaxPWM = 50;
 	byte LowMax = 100;
 	byte HighMax = 255;
 	byte Deadband = 3;

@@ -235,6 +235,9 @@ void initDOGL_Display( void* z ){
 void runDOGL_DisplayTask( void ){
 
   //loadSavedRuntimeData();
+  while( millis() < 4000 ){ // show AOG control for 2 seconds before main display loads
+    vTaskDelay( 100 );
+  }
   for( uint8_t i = 0; i < menuitems; i ++ ){
     uint8_t index = i ;//+ runtimeData.currentDisplayIndex;
     if( index > ( menuitems - 1 )){

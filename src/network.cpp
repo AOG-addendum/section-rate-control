@@ -73,13 +73,13 @@ void initWiFi( void ){
   Serial.print( sectionRateConfig.password );
   Serial.println( "\"" );
 
-  uint8_t timeout = 5;
-  // Wait for connection, 2.5s timeout
+  uint8_t timeout = 10;
+  // Wait for connection, 5.0s timeout
   do {
-  delay( 500 );
-  Serial.print( "." );
-  digitalWrite( sectionRateConfig.gpioWifiLed, ! digitalRead( sectionRateConfig.gpioWifiLed ));
-  timeout--;
+    delay( 500 );
+    Serial.print( "." );
+    digitalWrite( sectionRateConfig.gpioWifiLed, ! digitalRead( sectionRateConfig.gpioWifiLed ));
+    timeout--;
   } while( timeout && WiFi.status() != WL_CONNECTED );
   // not connected -> create hotspot
   if( WiFi.status() != WL_CONNECTED ) {

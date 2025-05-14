@@ -7,7 +7,7 @@
 
 void diagnosticWorker10Hz( void* z ) {
   vTaskDelay( 2000 );
-  constexpr TickType_t xFrequency = 100;
+  constexpr TickType_t xFrequency = 1000;
   TickType_t xLastWakeTime = xTaskGetTickCount();
   for( ;; ) {
 

@@ -106,6 +106,11 @@ void initESPUI ( void ) {
       sectionRateConfig.aogPortListenTo = control->value.toInt();
       setResetButtonToRed();
     } );
+    ESPUI.addControl( ControlType::Number, "AOG Port to send to*", String( sectionRateConfig.aogPortSendTo ), ControlColor::Wetasphalt, tab,
+    []( Control * control, int id ) {
+      sectionRateConfig.aogPortSendTo = control->value.toInt();
+      setResetButtonToRed();
+    } );
   }
 
   // Settings Tab

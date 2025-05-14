@@ -115,6 +115,7 @@ json parseSectionRateConfigToJson( const SectionRateConfig& config ) {
   j["connection"]["rc"]["listenTo"] = config.rcPortListenTo;
   j["connection"]["rc"]["sendTo"] = config.rcPortSendTo;
   j["connection"]["aog"]["listenTo"] = config.aogPortListenTo;
+  j["connection"]["aog"]["sendTo"] = config.aogPortSendTo;
 
   j["settings"]["invertRateMotor"] = config.invertRateMotor;
   j["settings"]["rateControlAlwaysManual"] = config.rateControlAlwaysManual;
@@ -150,6 +151,7 @@ void parseJsonToSectionRateConfig( json& j, SectionRateConfig& config ) {
       config.rcPortListenTo = j.value( "/connection/rc/listenTo"_json_pointer, sectionRateConfigDefaults.rcPortListenTo );
       config.rcPortSendTo = j.value( "/connection/rc/sendTo"_json_pointer, sectionRateConfigDefaults.rcPortSendTo );
       config.aogPortListenTo = j.value( "/connection/aog/listenTo"_json_pointer, sectionRateConfigDefaults.aogPortListenTo );
+      config.aogPortSendTo = j.value( "/connection/aog/aogPortSendTo"_json_pointer, sectionRateConfigDefaults.aogPortSendTo );
 
       config.invertRateMotor = j.value( "/settings/invertRateMotor"_json_pointer, sectionRateConfigDefaults.invertRateMotor );
       config.rateControlAlwaysManual = j.value( "/settings/rateControlAlwaysManual"_json_pointer, sectionRateConfigDefaults.rateControlAlwaysManual );

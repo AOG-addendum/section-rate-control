@@ -178,6 +178,7 @@ struct SectionRateConfig {
   uint16_t rcPortListenTo = 28888;
   uint16_t rcPortSendTo = 29999;
   uint16_t aogPortListenTo = 8888;
+  uint16_t aogPortSendTo = 9999;
 
 	bool invertRateMotor = false;
 	bool rateControlAlwaysManual = false;

@@ -15,6 +15,8 @@ uint8_t PGNlength;
 uint8_t sectionsOn = 0;
 unsigned long sectionsUpdateMillis;
 
+uint8_t loopCounterUDP;
+
 void SendData(){
 
 	//PGN32400, Rate info from module to RC
@@ -118,6 +120,15 @@ void SendData(){
 	udpSendFrom.writeTo( DataOut, 15, ipDestination, sectionRateConfig.rcPortSendTo );
 	sendSwitchData();
 
+	if( ++loopCounterUDP >= 25 ){ // 2.5 seconds
+		loopCounterUDP = 0;
+		// 0    127
+		// 1    200
+		uint8_t helloFromMachine[] = { 128, 129, 123, 123, 5, 0, 0, 0, 0, 0, 71 };
+		helloFromMachine[5] = 0; // relayLo
+		helloFromMachine[6] = 0; // relayHi
+		udpSendFrom.writeTo( helloFromMachine, sizeof( helloFromMachine ), ipDestination, sectionRateConfig.aogPortSendTo );
+	}
 }
 
 void initAutoRateControlUDP(){

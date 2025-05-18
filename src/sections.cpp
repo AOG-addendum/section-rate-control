@@ -32,12 +32,8 @@ void initAutoSectionUDP(){
 
         case 32712: {
           // PGN32712, Hello from AgIO to module
-          // 0    127
-          // 1    200
-          uint8_t helloFromMachine[] = { 128, 129, 123, 123, 5, 0, 0, 0, 0, 0, 71 };
-          helloFromMachine[5] = 0; // relayLo
-          helloFromMachine[6] = 0; // relayHi
-          udpSendFrom.broadcastTo( helloFromMachine, sizeof( helloFromMachine ), sectionRateConfig.aogPortSendTo );
+          ipDestination = packet.remoteIP();
+          break;
         }
         break;
 

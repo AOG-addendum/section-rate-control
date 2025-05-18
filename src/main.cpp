@@ -24,7 +24,7 @@ portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 const byte DNS_PORT = 53;
 IPAddress apIP( 192, 168, 1, 1 ); //IP address for access point
-IPAddress ipDestination( 192, 168, 50, 255 ); //IP address to send UDP data to
+IPAddress ipDestination( 192, 168, 5, 1 ); //IP address to send UDP data to
 
 ///////////////////////////////////////////////////////////////////////////
 // external Libraries

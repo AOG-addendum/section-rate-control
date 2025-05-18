@@ -57,16 +57,65 @@ void SendData(){
 	DataOut[9] = Sensor.pwmSetting;
 	DataOut[10] = Sensor.pwmSetting >> 8;
 	// status
-	// bit 0    - sensor 0 receiving rate controller data
-	// bit 1    - sensor 1 receiving rate controller data
-	// bit 2    - wifi rssi < -80
-	// bit 3	- wifi rssi < -70
-	// bit 4	- wifi rssi < -65
 	DataOut[11] = 0;
 	if (millis()-Sensor.RateCommTime < 4000) DataOut[11] |= 0b00000001;
 	DataOut[12] = CRC(DataOut, 12, 0);
 	udpSendFrom.writeTo( DataOut, 13, ipDestination, sectionRateConfig.rcPortSendTo );
 
+	//PGN32401, module info from module to RC
+	//0     145
+	//1     126
+	//2     module ID
+	//3     Pressure Lo X 10
+	//4     Pressure Hi
+	//5     -
+	//6     -
+	//7     -
+	//8     -
+	//9     -
+	//10    -
+	//11    InoID lo
+	//12    InoID hi
+	//13    status
+	//      bit 0   work switch
+	//      bit 1   wifi rssi < -80
+	//      bit 2	wifi rssi < -70
+	//      bit 3	wifi rssi < -65
+	//      bit 4   ethernet connected
+	//      bit 5   good pin configuration
+	//14    CRC
+
+	DataOut[0] = 145;
+	DataOut[1] = 126;
+	DataOut[2] = MDL.ID;
+	DataOut[3] = (byte) 0; //CurrentPressure;
+	DataOut[4] = (byte) 0; //(CurrentPressure >> 8);
+	DataOut[5] = 0;
+	DataOut[6] = 0;
+	DataOut[7] = 0;
+	DataOut[8] = 0;
+	DataOut[9] = 0;
+	DataOut[10] = 0;
+	DataOut[11] = (byte)3124;
+	DataOut[12] = (byte)(3124 >> 8);
+
+	// status
+	DataOut[13] = 0b00000001;
+	//if ( true ) DataOut[13] |= 0b00000001;
+
+	int8_t WifiStrength = WiFi.RSSI();
+	if (WifiStrength < -80){
+		DataOut[13] |= 0b00000010;
+	}
+	else if (WifiStrength < -70){
+		DataOut[13] |= 0b00000100;
+	}
+	else{
+		DataOut[13] |= 0b00001000;
+	}
+	DataOut[13] |= 0b00100000; // good pins
+	DataOut[14] = CRC(DataOut, 14, 0);
+	udpSendFrom.writeTo( DataOut, 15, ipDestination, sectionRateConfig.rcPortSendTo );
 	sendSwitchData();
 
 }

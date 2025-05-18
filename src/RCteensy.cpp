@@ -9,7 +9,7 @@
 uint8_t ErrorCount;
 bool IOexpanderFound;
 
-unsigned long UDPmillis;
+uint8_t udpLoopCounter;
 
 void rateController20Hz ( void* z ) {
   constexpr TickType_t xFrequency = 50;
@@ -30,8 +30,8 @@ void rateController20Hz ( void* z ) {
 		{
 			ManualControl();
 		}
-		if( millis() - UDPmillis > 200 ){
-			UDPmillis = millis();
+		if( ++udpLoopCounter >= 4 ){
+			udpLoopCounter = 0;
 			SendData();
 		}
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );

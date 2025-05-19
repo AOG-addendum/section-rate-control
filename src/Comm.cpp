@@ -120,7 +120,7 @@ void SendData(){
 	udpSendFrom.writeTo( DataOut, 15, ipDestination, sectionRateConfig.rcPortSendTo );
 	sendSwitchData();
 
-	if( ++loopCounterUDP >= 25 ){ // 2.5 seconds
+	if( ++loopCounterUDP >= 12 ){ // 2.5 seconds
 		loopCounterUDP = 0;
 		// 0    127
 		// 1    200

@@ -7,10 +7,6 @@ AsyncUDP udpSectionPort;
 
 void initAutoSectionUDP(){
 
-  Wire.beginTransmission( 0x20 );
-  Wire.write( 0x00 ); // IODIRA register
-  Wire.write( 0x00 ); // set entire PORT A to output
-  Wire.endTransmission();
   if( udpSectionPort.listen( sectionRateConfig.aogPortListenTo )){
     udpSectionPort.onPacket([](AsyncUDPPacket packet){
       uint8_t* data = packet.data();

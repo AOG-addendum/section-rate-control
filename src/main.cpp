@@ -173,6 +173,12 @@ void setup( void ) {
   pinMode( sectionRateConfig.gpioRateUp, INPUT );
   pinMode( sectionRateConfig.gpioRateDown, INPUT );
   pinMode( sectionRateConfig.gpioManualAutoSelection, INPUT );
+
+  Wire.beginTransmission( 0x20 );
+  Wire.write( 0x00 ); // IODIRA register
+  Wire.write( 0x00 ); // set entire PORT A to output
+  Wire.endTransmission();
+
   if( AOGsectionControl == true ){
     initAutoSectionUDP();
     if( AOGrateControl == false ){
@@ -184,7 +190,7 @@ void setup( void ) {
   } else {
     Wire.beginTransmission( 0x20 );
     Wire.write( 0x12 ); // address port A
-    Wire.write( 0 );  // all sections pulled down
+    Wire.write( 0x00 );  // all sections off
     Wire.endTransmission();
     initManualRate();
     initManualSection();

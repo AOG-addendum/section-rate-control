@@ -200,7 +200,12 @@ void setup( void ) {
 void loop( void ) {
   vTaskDelay( 10 );
   if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == AOGsectionControl ){
+    Wire.beginTransmission( 0x20 );
+    Wire.write( 0x12 ); // address port A
+    Wire.write( 0x00 );  // all sections off
+    Wire.endTransmission();
     Serial.println("\nAuto/Manual switch changed, restarting...\n");
+    delay( 100 );
     ESP.restart();
   }
 }

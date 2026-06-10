@@ -10,6 +10,23 @@ bool WiFiWasConnected = false;
 
 void WiFiStationGotIP( WiFiEvent_t event, WiFiEventInfo_t info ){
   IPAddress myIP = WiFi.localIP();
+  if( myIP == IPAddress( 0, 0, 0, 0 )) {
+    Serial.print("\nCollecting valid IP address ");
+    uint8_t timeout = 100;
+    while( timeout && myIP == IPAddress( 0, 0, 0, 0 )){
+      delay( 10 );
+      myIP = WiFi.localIP();
+      timeout--;
+      Serial.print(".");
+    }
+    if( timeout > 0 ){
+      Serial.println( ". done" );
+    } else {
+      Serial.println( "\nDHCP failed, module will not work, restarting..." );
+      ESP.restart();
+      delay( 100 );
+    }
+  }
   if( myIP[3] != 71 ){
       myIP[3] = 71;
       IPAddress gwIP = WiFi.gatewayIP();
@@ -83,26 +100,32 @@ void initWiFi( void ){
   } while( timeout && WiFi.status() != WL_CONNECTED );
   // not connected -> create hotspot
   if( WiFi.status() != WL_CONNECTED ) {
-      WiFi.disconnect( true );
+      if( WiFi.disconnect( true )){
+        Serial.println( "Wifi reset successful" );
+      } else Serial.println( "Wifi reset failed" );
 
       digitalWrite( sectionRateConfig.gpioWifiLed, LOW );
 
-      apName = String( "Section - Rate control " );
+      apName = String( "Section Rate " );
       apName += WiFi.macAddress();
       apName.replace( ":", "" );
 
       Serial.print( "\n\nCreating hotspot \"" );
       Serial.print( apName.c_str() );
       Serial.println( "\"" );
-      WiFi.mode( WIFI_MODE_APSTA );
-      delay( 25 );
-      WiFi.softAP( apName.c_str() );
+      if( WiFi.mode( WIFI_MODE_APSTA )){
+        delay( 25 );
+        if( WiFi.softAPConfig( softApIP, softApIP, IPAddress( 255, 255, 255, 0 ))){
+          delay( 25 );
+          WiFi.softAP( apName.c_str() );
+        } else Serial.println( "Wifi softAPConfig failed" );
+      } else Serial.println( "Wifi APSTA mode failed" );
+
       WiFi.begin( sectionRateConfig.ssid, sectionRateConfig.password );
       while ( !SYSTEM_EVENT_AP_START ){ // wait until AP has started
           delay( 100);
           Serial.print(".");
       }
-      WiFi.softAPConfig( softApIP, softApIP, IPAddress( 255, 255, 255, 0 ) );
       delay( 25 );
     }
 }

@@ -8,7 +8,6 @@
 
 #include <WiFi.h>
 
-#include <DNSServer.h>
 #include <ESPUI.h>
 
 #include <AsyncElegantOTA.h>
@@ -22,14 +21,12 @@ SectionRateConfig sectionRateConfig, sectionRateConfigDefaults;
 
 portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
-const byte DNS_PORT = 53;
 IPAddress apIP( 192, 168, 1, 1 ); //IP address for access point
 IPAddress ipDestination( 192, 168, 5, 1 ); //IP address to send UDP data to
 
 ///////////////////////////////////////////////////////////////////////////
 // external Libraries
 ///////////////////////////////////////////////////////////////////////////
-DNSServer dnsServer;
 
 unsigned long WifiSwitchesTimer;
 bool WifiSwitchesEnabled;
@@ -142,8 +139,6 @@ void setup( void ) {
   initWiFi();
   apIP = WiFi.localIP();
 
-  dnsServer.start( DNS_PORT, "*", apIP );
-
   Serial.println( "\n\nWiFi parameters:" );
   Serial.print( "Mode: " );
   Serial.println( WiFi.getMode() == WIFI_AP ? "Station" : "Client" );
@@ -203,8 +198,7 @@ void setup( void ) {
 }
 
 void loop( void ) {
-  dnsServer.processNextRequest();
-  vTaskDelay( 100 );
+  vTaskDelay( 10 );
   if( digitalRead( sectionRateConfig.gpioManualAutoSelection ) == AOGsectionControl ){
     Serial.println("\nAuto/Manual switch changed, restarting...\n");
     ESP.restart();

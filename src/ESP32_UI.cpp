@@ -6,6 +6,7 @@
 #include "main.hpp"
 #include "jsonFunctions.hpp"
 
+uint16_t labelAgOpenGpsAddress;
 uint16_t labelLoad;
 uint16_t labelRCAppUdpData;
 uint16_t labelSectionStatus;
@@ -49,6 +50,7 @@ void initESPUI ( void ) {
   {
     uint16_t tab = ESPUI.addControl( ControlType::Tab, "Diagnostics", "Diagnostics" );
 
+    labelAgOpenGpsAddress = ESPUI.addControl( ControlType::Label, "AgOpenGPS address:", "N/A", ControlColor::Turquoise, tab );
     labelSectionStatus = ESPUI.addControl( ControlType::Label, "Section data:", "N/A", ControlColor::Turquoise, tab );
     labelRateValve = ESPUI.addControl( ControlType::Label, "Rate motor/valve data:", "N/A", ControlColor::Turquoise, tab );
     labelRateMeter = ESPUI.addControl( ControlType::Label, "Rate meter data:", "N/A", ControlColor::Turquoise, tab );

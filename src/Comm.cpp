@@ -234,6 +234,15 @@ void initAutoRateControlUDP(){
 						}
 					}
 					break;
+					case 0x7FC8: { // Hello message
+						IPAddress address = packet.remoteIP();
+						if( ipDestination == address ){ // only send autosteer to current AgOpenGPS
+							lastHelloReceivedMillis = millis();
+						} else if ( millis() - lastHelloReceivedMillis > 4000 ){ // AgOpenGPS Hello timed out
+							ipDestination = address; // switch to new AgOpenGPS address
+							lastHelloReceivedMillis = millis();
+						}
+					}
 				}
 		});
 	}

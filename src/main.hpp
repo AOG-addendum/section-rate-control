@@ -16,6 +16,7 @@
 
 #define MaxReadBuffer 100
 
+extern uint16_t labelAgOpenGpsAddress;
 extern uint16_t labelLoad;
 extern uint16_t labelRCAppUdpData;
 extern uint16_t labelSectionStatus;
@@ -199,6 +200,7 @@ extern AsyncUDP udpRemotePort;
 extern AsyncUDP udpSendFrom;
 extern AsyncUDP udpSectionPort;
 extern IPAddress ipDestination; //IP address to send UDP data to
+extern time_t lastHelloReceivedMillis;
 
 ///////////////////////////////////////////////////////////////////////////
 // Helper Classes

@@ -12,6 +12,20 @@ void diagnosticWorker10Hz( void* z ) {
   for( ;; ) {
 
     {
+      Control* labelAgOpenGpsAddressHandle = ESPUI.getControl( labelAgOpenGpsAddress );
+      time_t seconds = ( millis() - lastHelloReceivedMillis ) / 1000;
+      String str;
+      str.reserve( 30 );
+      str = "IP Address ";
+      str += ipDestination.toString();
+      str += " - ";
+      str += ( String )seconds;
+      str += " seconds ago";
+      labelAgOpenGpsAddressHandle->value = str;
+      ESPUI.updateControl( labelAgOpenGpsAddressHandle );
+    }
+
+    {
       Control* labelSectionsStatusHandle = ESPUI.getControl( labelSectionStatus );
       String str;
       str.reserve( 30 );
